@@ -15,7 +15,7 @@
         <div class="container">
             <!-- Logo Kiri -->
             <a href="/" class="navbar-brand">
-                <img src="assets/terminallogo.png" alt="PoLaRs." class="navbar-logo-polars">
+                <img src="{{ asset('assets/terminallogo.png') }}" alt="PoLaRs." class="navbar-logo-polars">
             </a>
 
             <!-- Toggle Button -->

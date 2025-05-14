@@ -456,11 +456,11 @@
         padding-bottom: 12px;
         -webkit-overflow-scrolling: touch;
     }
-    
+
     .btn-filter {
         white-space: nowrap;
     }
-    
+
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 16px;
@@ -511,8 +511,10 @@
         -webkit-overflow-scrolling: touch;
         padding-bottom: 0.5rem;
     }
-    
+
     .btn-filter {
         display: inline-block;
     }
 }
+
+
