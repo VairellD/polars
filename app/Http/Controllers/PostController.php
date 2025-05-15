@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Media;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Add this import
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -41,48 +43,75 @@ class PostController extends Controller
 
     /**
      * Store a newly created post in storage.
+     * UPDATED: Now supports better file type detection and validation
      */
+    /**
+ * Store a newly created post in storage with multiple media files.
+ */
+
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|max:102400', // 100MB max
-            'file_type' => 'nullable|required_with:file|in:image,audio,video',
+            'files' => 'nullable|array',
+            'files.*' => 'nullable|file|max:102400', // 100MB max for each file
+            'has_images' => 'nullable|boolean',
+            'has_videos' => 'nullable|boolean',
+            'has_audio' => 'nullable|boolean',
         ]);
 
-        $postData = [
-            'user_id' => Auth::id(), // Change from auth()->id()
+        // Create the post
+        $post = Post::create([
+            'user_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
-        ];
+        ]);
 
-        // Process file if uploaded
-        if ($request->hasFile('file')) {
-            // Determine allowed mime types based on file_type
-            $allowed_types = [
-                'image' => 'image/*',
-                'audio' => 'audio/*',
-                'video' => 'video/*',
-            ];
+        // Process files if uploaded
+        if ($request->hasFile('files')) {
+            $files = $request->file('files');
+            
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    // Auto-detect file type from MIME
+                    $mimeType = $file->getMimeType();
+                    $fileType = null;
+                    
+                    if (str_starts_with($mimeType, 'image/')) {
+                        $fileType = 'image';
+                    } elseif (str_starts_with($mimeType, 'video/')) {
+                        $fileType = 'video';
+                    } elseif (str_starts_with($mimeType, 'audio/')) {
+                        $fileType = 'audio';
+                    }
+                    
+                    if ($fileType) {
+                        $extension = $file->getClientOriginalExtension();
+                        $filename = Str::uuid() . '.' . $extension;
+                        
+                        try {
+                            $path = $file->storeAs('posts/' . $fileType, $filename, 'public');
+                            
+                            // Create a media record linked to post
+                            Media::create([
+                                'post_id' => $post->id,
+                                'file_url' => Storage::url($path),
+                                'file_type' => $fileType,
+                                'file_extension' => $extension,
+                                'file_size' => $file->getSize(),
+                            ]);
 
-            // Additional validation for file type
-            $request->validate([
-                'file' => 'mimes:' . $allowed_types[$request->file_type],
-            ]);
-
-            $file = $request->file('file');
-            $extension = $file->getClientOriginalExtension();
-            $filename = Str::uuid() . '.' . $extension;
-            $path = $file->storeAs('posts/' . $request->file_type, $filename, 'public');
-
-            $postData['file_url'] = Storage::url($path);
-            $postData['file_type'] = $request->file_type;
-            $postData['file_extension'] = $extension;
-            $postData['file_size'] = $file->getSize();
+                            // Log success
+                            Log::info("File uploaded successfully: {$path}");
+                        } catch (\Exception $e) {
+                            Log::error('File upload failed: ' . $e->getMessage());
+                            // Continue to next file instead of failing the entire upload
+                        }
+                    }
+                }
+            }
         }
-
-        $post = Post::create($postData);
 
         return redirect()->route('posts.show', $post)
             ->with('success', 'Your post has been created successfully!');
@@ -90,11 +119,12 @@ class PostController extends Controller
 
     /**
      * Display the specified post.
+     * FIXED: Now handles guest users properly
      */
     public function show(Post $post)
     {
         $post->load(['user', 'comments.user'])->loadCount(['likes', 'comments']);
-        $userLiked = $post->isLikedBy(Auth::user()); // Change from auth()->user()
+        $userLiked = Auth::check() ? $post->isLikedBy(Auth::user()) : false;
 
         return view('posts.show', compact('post', 'userLiked'));
     }
@@ -104,7 +134,6 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        // Replace $this->authorize with a manual check
         if (Auth::id() !== $post->user_id) {
             abort(403);
         }
@@ -115,9 +144,8 @@ class PostController extends Controller
     /**
      * Update the specified post in storage.
      */
-    public function update(Request $request, Post $post)
+     public function update(Request $request, Post $post)
     {
-        // Replace $this->authorize with a manual check
         if (Auth::id() !== $post->user_id) {
             abort(403);
         }
@@ -125,12 +153,55 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'files' => 'nullable|array',
+            'files.*' => 'nullable|file|max:102400', // 100MB max for each file
         ]);
 
         $post->update([
             'title' => $request->title,
             'description' => $request->description,
         ]);
+
+        // Handle file uploads pada update jika perlu
+        if ($request->hasFile('files')) {
+            $files = $request->file('files');
+            
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    // Auto-detect file type from MIME
+                    $mimeType = $file->getMimeType();
+                    $fileType = null;
+                    
+                    if (str_starts_with($mimeType, 'image/')) {
+                        $fileType = 'image';
+                    } elseif (str_starts_with($mimeType, 'video/')) {
+                        $fileType = 'video';
+                    } elseif (str_starts_with($mimeType, 'audio/')) {
+                        $fileType = 'audio';
+                    }
+                    
+                    if ($fileType) {
+                        $extension = $file->getClientOriginalExtension();
+                        $filename = Str::uuid() . '.' . $extension;
+                        
+                        try {
+                            $path = $file->storeAs('posts/' . $fileType, $filename, 'public');
+                            
+                            // Create a media record linked to post
+                            Media::create([
+                                'post_id' => $post->id,
+                                'file_url' => Storage::url($path),
+                                'file_type' => $fileType,
+                                'file_extension' => $extension,
+                                'file_size' => $file->getSize(),
+                            ]);
+                        } catch (\Exception $e) {
+                            Log::error('File upload failed: ' . $e->getMessage());
+                        }
+                    }
+                }
+            }
+        }
 
         return redirect()->route('posts.show', $post)
             ->with('success', 'Post updated successfully!');
@@ -141,17 +212,23 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        // Replace $this->authorize with a manual check
         if (Auth::id() !== $post->user_id) {
             abort(403);
         }
 
-        // Delete the file if it exists
+        // Delete all media files associated with the post
+        foreach ($post->media as $media) {
+            $path = str_replace(Storage::url(''), '', $media->file_url);
+            
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        // Delete legacy file if it exists (backward compatibility)
         if ($post->file_url) {
-            // Extract the path from the URL
             $path = str_replace(Storage::url(''), '', $post->file_url);
 
-            // Delete the file from storage
             if (Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->delete($path);
             }

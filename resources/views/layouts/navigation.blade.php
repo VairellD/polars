@@ -26,11 +26,17 @@
                     HOME
                 </a>
                 <a href="{{ route('posts.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('posts*') ? 'border-purple-600 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                    GALLERY
+                    FEED
                 </a>
-                <a href="{{ route('profile.edit') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('profile*') ? 'border-purple-600 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                    PROFILE
-                </a>
+                @auth
+                    <a href="{{ route('profile.show', Auth::user()) }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('profile*') ? 'border-purple-600 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        PROFILE
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('login') ? 'border-purple-600 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        ARTS
+                    </a>
+                @endauth
             </div>
 
             <!-- Search Form -->
@@ -49,13 +55,17 @@
             <!-- Right Logo with Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6 relative group">
                 <a href="#" class="flex-shrink-0">
-                    <img src="{{ asset('assets/himedia logo 1.png') }}" alt="HiMedia" class="h-8 w-auto">
+                     @auth
+            <img src="{{ Auth::user()->profile_picture_url ?? asset('assets/default-avatar.png') }}" alt="Profile" class="h-8 w-8 rounded-full object-cover">
+        @else
+            <img src="{{ asset('assets/default-avatar.png') }}" alt="Guest" class="h-8 w-8 rounded-full">
+        @endauth
                 </a>
 
                 <!-- Dropdown Menu (appears on hover) -->
                 <div class="hidden group-hover:block absolute right-0 w-48 py-1 mt-12 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                     @auth
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <a href="{{ route('profile.show', Auth::user()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
@@ -103,11 +113,17 @@
                 HOME
             </a>
             <a href="{{ route('posts.index') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->is('posts*') ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">
-                GALLERY
+                FEED
             </a>
-            <a href="{{ route('profile.edit') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->is('profile*') ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">
-                PROFILE
-            </a>
+            @auth
+                <a href="{{ route('profile.show', Auth::user()) }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->is('profile*') ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">
+                    PROFILE
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->is('login') ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">
+                    ARTS
+                </a>
+            @endauth
         </div>
         <div class="pt-4 pb-3 border-t border-gray-200">
             <!-- Mobile Search Form -->
@@ -126,7 +142,7 @@
             <!-- Mobile Auth Links -->
             <div class="mt-3 px-2 space-y-1">
                 @auth
-                    <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                    <a href="{{ route('profile.show', Auth::user()) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                         My Profile
                     </a>
                     <a href="{{ route('posts.create') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
