@@ -19,6 +19,14 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Public profile routes
+Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+// Route to serve profile pictures
+Route::get('/profile-pictures/{path}', [App\Http\Controllers\ProfileController::class, 'showPictures'])
+    ->where('path', '.*')
+    ->name('profile.picture');
+    
+// Protected profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

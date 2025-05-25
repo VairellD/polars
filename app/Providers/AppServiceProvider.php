@@ -19,6 +19,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Add a custom disk for private files
+        \Storage::extend('private', function ($app, $config) {
+            $config['root'] = public_path('app/private/public');
+            return new \Illuminate\Filesystem\FilesystemAdapter(
+                new \League\Flysystem\Filesystem(
+                    new \League\Flysystem\Local\LocalFilesystemAdapter(
+                        $config['root']
+                    )
+                ),
+                $config
+            );
+        });
     }
 }

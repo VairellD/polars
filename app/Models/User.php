@@ -22,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'bio',
+        'url',
+        'profile_picture',
     ];
 
     /**
@@ -67,4 +70,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+  /**
+ * Get the user's profile picture or default avatar if none exists.
+ *
+ * @return string
+ */
+public function getProfilePictureUrlAttribute()
+{
+    if (!empty($this->profile_picture)) {
+        // Extract the filename from the full path
+        $pathParts = explode('/', $this->profile_picture);
+        $filename = end($pathParts);
+        
+        // Return the route to our controller
+        return route('profile.picture', $filename);
+    }
+    
+    return asset('assets/default-avatar.png');
+}
+
+    
 }

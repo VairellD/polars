@@ -18,10 +18,10 @@ class Post extends Model
         'user_id',
         'title',
         'description',
-        'file_url',
-        'file_type',
-        'file_extension',
-        'file_size',
+        'file_url', // Tetap ada untuk backward compatibility
+        'file_type', // Tetap ada untuk backward compatibility
+        'file_extension', // Tetap ada untuk backward compatibility
+        'file_size', // Tetap ada untuk backward compatibility
     ];
 
     /**
@@ -59,10 +59,22 @@ class Post extends Model
     }
 
     /**
-     * Check if user has liked this post
+     * Get the media for this post.
      */
-    public function isLikedBy(User $user)
+    public function media()
     {
+        return $this->hasMany(Media::class);
+    }
+
+    /**
+     * Check if user has liked this post
+     * FIXED: Now handles null users (guests)
+     */
+    public function isLikedBy(?User $user = null): bool
+    {
+        if (!$user) {
+            return false;
+        }
         return $this->likes()->where('user_id', $user->id)->exists();
     }
 }
