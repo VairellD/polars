@@ -3,8 +3,10 @@
         <div class="flex justify-between h-16">
             <!-- Left Logo -->
             <div class="flex-shrink-0 flex items-center">
-                <a href="/" class="block h-7">
-                    <img src="{{ asset('assets/terminallogo.png') }}" alt="PoLaRs." class="h-8 w-auto">
+                <a href="/" class="block">
+                    <span class="text-xl font-bold">
+                        <img src="{{ asset('assets/terminallogo.png') }}" alt="PoLaRs." class="h-8 w-auto">
+                    </span>
                 </a>
             </div>
 
@@ -30,7 +32,7 @@
                 </a>
                 @auth
                     <a href="{{ route('profile.show', Auth::user()) }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('profile*') ? 'border-purple-600 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                        PROFILE
+                        MY PROFILE
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('login') ? 'border-purple-600 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
@@ -43,7 +45,8 @@
             <div class="hidden sm:flex sm:items-center">
                 <form action="{{ route('posts.index') }}" method="GET" class="relative flex items-center">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search"
-                           class="w-64 h-9 pl-3 pr-10 text-sm placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500">
+                           class="w-64 h-9 pl-3 pr-10 text-sm placeholder-gray-500 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                           style="background-color: #ECE6F0;">
                     <button type="submit" class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -117,7 +120,7 @@
             </a>
             @auth
                 <a href="{{ route('profile.show', Auth::user()) }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->is('profile*') ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">
-                    PROFILE
+                    MY PROFILE
                 </a>
             @else
                 <a href="{{ route('login') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->is('login') ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">
@@ -130,7 +133,8 @@
             <form action="{{ route('posts.index') }}" method="GET" class="mt-3 px-4 space-y-1">
                 <div class="relative rounded-md shadow-sm">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search"
-                           class="block w-full h-10 pl-3 pr-10 text-sm placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500">
+                           class="block w-full h-10 pl-3 pr-10 text-sm placeholder-gray-500 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                           style="background-color: #ECE6F0;">
                     <button type="submit" class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
