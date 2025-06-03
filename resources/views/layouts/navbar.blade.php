@@ -36,7 +36,7 @@
             <a href="#" class="navbar-brand">
                 <img src="{{ asset('assets/himedia logo 1.png') }}" alt="HiMedia" class="logo-himedia">
             </a>
-
+            
             <!-- Hidden Dropdown that appears on hover -->
             <div class="auth-dropdown">
                 @auth
