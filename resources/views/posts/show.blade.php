@@ -12,7 +12,7 @@
                     <i class="bi bi-arrow-left"></i> Back to Feed
                 </a>
             </div>
-            
+
             <!-- Post Card -->
             <div class="card border-0 shadow-sm rounded-lg mb-4">
                 <div class="card-body p-3">
@@ -20,7 +20,7 @@
                         <div class="rounded-circle overflow-hidden me-3" style="width: 50px; height: 50px; flex-shrink: 0;">
                             <img src="{{ $post->user->profile_picture ?? asset('assets/default-avatar.png') }}" class="img-fluid" alt="{{ $post->user->name }}">
                         </div>
-                        
+
                         <div class="flex-grow-1">
                             <!-- Post Header -->
                             <div class="d-flex justify-content-between align-items-center">
@@ -28,7 +28,7 @@
                                     <h5 class="mb-0 fw-bold">{{ $post->user->name }}</h5>
                                     <p class="text-muted mb-1 small">{{ '@' . $post->user->username }}</p>
                                 </div>
-                                
+
                                 <!-- Post Options -->
                                 @if(Auth::check() && Auth::id() === $post->user_id)
                                     <div class="dropdown">
@@ -48,10 +48,27 @@
                                     </div>
                                 @endif
                             </div>
-                            
+
                             <!-- Post Content -->
                             <p class="my-3 fs-5">{{ $post->description }}</p>
-                            
+                             <!-- Display Hashtags -->
+                             @if($post->hashtags && $post->hashtags->count() > 0)
+                             <div class="mb-2">
+                                 @foreach($post->hashtags as $hashtag)
+                                     {{-- <a href="{{ route('posts.hashtag', $hashtag->slug) }}" class="hashtag-display me-1 text-decoration-none">#{{ $hashtag->name }}</a> --}}
+                                     <span class="hashtag-display me-1 text-decoration-none">#{{ $hashtag->name }}</span>
+                                 @endforeach
+                             </div>
+                         @endif
+
+                         <!-- Display Category -->
+                         @if($post->category)
+                             <div class="mb-2">
+                                 <a href="{{ route('posts.category', $post->category->slug) }}" class="category-display me-1 text-decoration-none">
+                                     {{ $post->category->icon ?? '📁' }} {{ $post->category->name }}
+                                 </a>
+                             </div>
+                         @endif
                             <!-- Post Media -->
                            <!-- Post Media -->
 @if($post->media->count() > 0)
@@ -97,7 +114,7 @@
                 @endif
             </div>
         </div>
-        
+
         <!-- Thumbnails for other media -->
         @if($post->media->count() > 1)
             <div class="media-thumbnails d-flex gap-2 overflow-auto py-2">
@@ -129,7 +146,7 @@
                 <source src="{{ $post->file_url }}" type="video/{{ $post->file_extension }}">
                 Your browser does not support the video tag.
             </video>
-        
+
         @elseif($firstMedia->file_type == 'audio')
 <div class="main-media-wrapper">
     <div class="w-100 d-flex justify-content-center align-items-center" style="max-height: 500px;">
@@ -161,28 +178,28 @@
         @endif
     </div>
 @endif
-                            
+
                             <!-- Post Metadata -->
                             <div class="text-muted mb-3">
                                 <small>{{ $post->created_at->format('g:i A · M j, Y') }}</small>
                             </div>
-                            
+
                             <!-- Post Stats -->
                             <div class="d-flex border-top border-bottom py-3 mb-3">
                                 <div class="me-4">
-                                    <span class="fw-bold post-likes-count">{{ $post->likes_count }}</span> 
+                                    <span class="fw-bold post-likes-count">{{ $post->likes_count }}</span>
                                     <span class="text-muted">{{ Str::plural('Like', $post->likes_count) }}</span>
                                 </div>
                                 <div>
-                                    <span class="fw-bold">{{ $post->comments_count }}</span> 
+                                    <span class="fw-bold">{{ $post->comments_count }}</span>
                                     <span class="text-muted">{{ Str::plural('Comment', $post->comments_count) }}</span>
                                 </div>
                             </div>
-                            
+
                             <!-- Post Actions -->
                             <div class="d-flex justify-content-between">
-                                <button class="btn btn-lg btn-link text-muted like-button flex-grow-1" 
-                                        data-post-id="{{ $post->id }}" 
+                                <button class="btn btn-lg btn-link text-muted like-button flex-grow-1"
+                                        data-post-id="{{ $post->id }}"
                                         data-liked="{{ $userLiked ? 'true' : 'false' }}">
                                     <i class="bi {{ $userLiked ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
                                     <span class="d-none d-md-inline ms-2">Like</span>
@@ -200,7 +217,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Comment Form -->
             <div class="card border-0 shadow-sm rounded-lg mb-4">
                 <div class="card-body p-3">
@@ -213,12 +230,12 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <!-- Contenteditable div instead of textarea -->
-                                    <div class="form-control border-0 comment-input" 
-                                         contenteditable="true" 
+                                    <div class="form-control border-0 comment-input"
+                                         contenteditable="true"
                                          data-placeholder="Write a comment..."
                                          id="comment-input"></div>
                                     <input type="hidden" name="content" id="comment-content">
-                                    
+
                                     <div class="text-end mt-2">
                                         <button type="submit" id="submit-comment-btn" class="btn btn-primary rounded-pill px-4" disabled>Comment</button>
                                     </div>
@@ -233,10 +250,10 @@
                     @endauth
                 </div>
             </div>
-            
+
             <!-- Comments List -->
             <h5 class="mb-3">Comments ({{ $post->comments_count }})</h5>
-            
+
             @forelse($post->comments as $comment)
                 <div class="card border-0 shadow-sm rounded-lg mb-3" id="comment-{{ $comment->id }}">
                     <div class="card-body p-3">
@@ -250,7 +267,7 @@
                                         <h6 class="mb-0 fw-bold">{{ $comment->user->name }}</h6>
                                         <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                     </div>
-                                    
+
                                     @if(Auth::check() && (Auth::id() === $comment->user_id || Auth::id() === $post->user_id))
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
@@ -290,40 +307,40 @@
         const commentInput = document.getElementById('comment-input');
         const commentContent = document.getElementById('comment-content');
         const submitCommentBtn = document.getElementById('submit-comment-btn');
-        
+
         if (commentInput) {
             commentInput.addEventListener('input', function() {
                 // Update hidden input value
                 commentContent.value = this.innerText.trim();
-                
+
                 // Enable/disable comment button based on content
                 submitCommentBtn.disabled = !this.innerText.trim();
             });
-            
+
             commentInput.addEventListener('focus', function() {
                 if (this.textContent.trim() === '') {
                     this.classList.add('focused');
                 }
             });
-            
+
             commentInput.addEventListener('blur', function() {
                 if (this.textContent.trim() === '') {
                     this.classList.remove('focused');
                 }
             });
-            
+
             // Submit form handler
             document.getElementById('comment-form').addEventListener('submit', function(e) {
                 commentContent.value = commentInput.innerText.trim();
-                
+
                 if (!commentContent.value) {
                     e.preventDefault();
                     alert('Please add some content to your comment');
                 }
             });
-            
+
         }
-        
+
         // Like button functionality with animation
         const likeButton = document.querySelector('.like-button');
         if (likeButton) {
@@ -331,7 +348,7 @@
                 const postId = this.dataset.postId;
                 const icon = this.querySelector('i');
                 const likesCountElement = document.querySelector('.post-likes-count');
-                
+
                 // Animate heart immediately
                 if (this.dataset.liked === 'true') {
                     // Unlike
@@ -352,7 +369,7 @@
                     this.dataset.liked = 'true';
                     likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
                 }
-                
+
                 // Send to server
                 @if(Auth::check())
                     fetch(`/posts/${postId}/like`, {
@@ -369,7 +386,7 @@
                         if (data.liked !== (this.dataset.liked === 'true')) {
                             // Revert animation if server response differs from client action
                             this.dataset.liked = data.liked ? 'true' : 'false';
-                            
+
                             if (data.liked) {
                                 icon.classList.remove('bi-heart');
                                 icon.classList.add('bi-heart-fill', 'text-danger');
@@ -377,7 +394,7 @@
                                 icon.classList.remove('bi-heart-fill', 'text-danger');
                                 icon.classList.add('bi-heart');
                             }
-                            
+
                             likesCountElement.textContent = data.likes_count;
                         }
                     })
@@ -390,7 +407,7 @@
                 @endif
             });
         }
-        
+
         // Scroll to comments if url has #comments
         if (window.location.hash === '#comments') {
             document.querySelector('h5').scrollIntoView({behavior: 'smooth'});
@@ -401,19 +418,19 @@ document.querySelectorAll('.media-thumbnail').forEach(thumbnail => {
     thumbnail.addEventListener('click', function() {
         const mediaIndex = parseInt(this.dataset.mediaIndex);
         const mediaItems = @json($post->media);
-        
+
         // Update active thumbnail
         document.querySelectorAll('.media-thumbnail').forEach(thumb => {
             thumb.classList.remove('active');
         });
         this.classList.add('active');
-        
+
         // Update main media display
         const mainContainer = document.querySelector('.main-media-container');
         const mediaItem = mediaItems[mediaIndex];
-        
+
         let mediaContent = '';
-        
+
         if (mediaItem.file_type === 'image') {
             mediaContent = `<img src="${mediaItem.file_url}" class="img-fluid w-100 rounded" alt="Post image">`;
         } else if (mediaItem.file_type === 'video') {
@@ -448,15 +465,15 @@ document.querySelectorAll('.media-thumbnail').forEach(thumbnail => {
                 </div>
             `;
         }
-        
+
         mainContainer.innerHTML = `<div class="main-media-wrapper">${mediaContent}</div>`;
-        
+
         // Reinitialize audio player if needed
         if (mediaItem.file_type === 'audio') {
             const wrapper = mainContainer.querySelector('.audio-player-wrapper');
             const audio = wrapper.querySelector('audio');
             const playButton = wrapper.querySelector('.play-button');
-            
+
             playButton.addEventListener('click', function() {
                 if (audio.paused) {
                     audio.play();
@@ -466,7 +483,7 @@ document.querySelectorAll('.media-thumbnail').forEach(thumbnail => {
                     this.classList.remove('playing');
                 }
             });
-            
+
             audio.addEventListener('ended', function() {
                 playButton.classList.remove('playing');
             });
@@ -479,7 +496,7 @@ document.querySelectorAll('.media-thumbnail').forEach(thumbnail => {
 document.querySelectorAll('.audio-player-wrapper').forEach(wrapper => {
     const audio = wrapper.querySelector('audio');
     const playButton = wrapper.querySelector('.play-button');
-    
+
     if (playButton && audio) {
         playButton.addEventListener('click', function() {
             if (audio.paused) {
@@ -493,7 +510,7 @@ document.querySelectorAll('.audio-player-wrapper').forEach(wrapper => {
                         }
                     }
                 });
-                
+
                 audio.play();
                 this.classList.add('playing');
             } else {
@@ -501,7 +518,7 @@ document.querySelectorAll('.audio-player-wrapper').forEach(wrapper => {
                 this.classList.remove('playing');
             }
         });
-        
+
         // Update button state when audio ends
         audio.addEventListener('ended', function() {
             playButton.classList.remove('playing');
@@ -517,12 +534,12 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
     const waveformProgress = player.querySelector('.waveform-progress');
     const waveformContainer = player.querySelector('.waveform-container');
     const timeDisplay = player.querySelector('.waveform-time');
-    
+
     if (audio && playBtn) {
         // Play/Pause functionality
         playBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            
+
             if (audio.paused) {
                 // Pause all other audio first
                 document.querySelectorAll('audio').forEach(otherAudio => {
@@ -535,7 +552,7 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
                         }
                     }
                 });
-                
+
                 // Play this audio
                 audio.play();
                 playBtn.classList.add('playing');
@@ -547,36 +564,36 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
                 waveformContainer.classList.remove('waveform-animated');
             }
         });
-        
+
         // Click on waveform to seek
         waveformContainer.addEventListener('click', function(e) {
             e.stopPropagation();
-            
+
             if (!audio.paused || audio.readyState >= 2) {
                 const rect = waveformContainer.getBoundingClientRect();
                 const clickPosition = (e.clientX - rect.left) / rect.width;
                 audio.currentTime = audio.duration * clickPosition;
-                
+
                 // If click but not playing, start playing
                 if (audio.paused) {
                     playBtn.click();
                 }
             }
         });
-        
+
         // Update progress bar and time
         audio.addEventListener('timeupdate', function() {
             if (audio.duration) {
                 const progress = (audio.currentTime / audio.duration) * 100;
                 waveformProgress.style.width = `${progress}%`;
-                
+
                 // Update time display
                 const minutes = Math.floor(audio.currentTime / 60);
                 const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
                 timeDisplay.textContent = `${minutes}:${seconds}`;
             }
         });
-        
+
         // Reset when ended
         audio.addEventListener('ended', function() {
             playBtn.classList.remove('playing');
@@ -584,7 +601,7 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
             waveformProgress.style.width = '0%';
             timeDisplay.textContent = '0:00';
         });
-        
+
         // Load metadata to setup
         audio.addEventListener('loadedmetadata', function() {
             const minutes = Math.floor(audio.duration / 60);
@@ -594,7 +611,7 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
     }
 });
     });
-    
+
     // Share functionality
     function sharePost() {
         if (navigator.share) {
@@ -620,66 +637,169 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
     body {
         background-color: #f7f9fa;
     }
-    
+
     .card {
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
     }
-    
+
     .btn-link {
         text-decoration: none;
         color: #6c757d;
         padding: 0.25rem 0.5rem;
         border-radius: 20px;
     }
-    
+
     .btn-link:hover {
         background-color: rgba(0, 0, 0, 0.05);
         color: #495057;
     }
-    
+
     .form-control:focus {
         box-shadow: none;
     }
-    
+
     /* Comment input styling */
     .comment-input {
         min-height: 60px;
         overflow-y: auto;
     }
-    
+
     .comment-input:empty:not(.focused):before {
         content: attr(data-placeholder);
         color: #aaa;
         pointer-events: none;
     }
-    
+
     .comment-input:focus {
         outline: none;
         box-shadow: none;
     }
-    
+
     /* Like button animations */
     @keyframes like-animation {
         0% { transform: scale(1); }
         50% { transform: scale(1.3); }
         100% { transform: scale(1); }
     }
-    
+
     @keyframes unlike-animation {
         0% { transform: scale(1); }
         50% { transform: scale(0.8); }
         100% { transform: scale(1); }
     }
-    
+
     .animate-like {
         animation: like-animation 0.3s ease;
     }
-    
+
     .animate-unlike {
         animation: unlike-animation 0.3s ease;
     }
+
+    .rounded-pill {
+        border-radius: 50px !important;
+    }
+
+     /* Hashtag styling */
+     .hashtag-tag {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        margin: 2px;
+        gap: 4px;
+    }
+
+    .hashtag-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        cursor: pointer;
+    }
+
+    .hashtag-remove:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .hashtag-display {
+        color: #1da1f2;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .hashtag-display:hover {
+        text-decoration: underline;
+    }
+
+    /* Category styling */
+    .category-tag {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        margin: 2px;
+        gap: 4px;
+    }
+
+    .category-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        cursor: pointer;
+    }
+
+    .category-remove:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .category-display {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        display: inline-block;
+        margin: 2px;
+    }
+
+    /* Category dropdown styling */
+    .category-dropdown {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .category-dropdown .dropdown-item {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .category-dropdown .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+
 
 
     /* Media gallery styling */

@@ -17,9 +17,14 @@
                 <a href="{{ route('profile.show', Auth::user()) }}" class="list-group-item list-group-item-action {{ Auth::id() === $user->id ? 'active' : '' }}">
                     <i class="bi bi-person me-2"></i> Profile
                 </a>
+                @if(Auth::check() && Auth::user()->is_admin)
+                <a href="{{ route('admin.profile') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-person-gear me-2"></i> Admin Profile
+                </a>
+                @endif
             </div>
         </div>
-        
+
         <!-- Main Profile Content -->
         <div class="col-lg-9">
             <!-- Profile Header -->
@@ -28,7 +33,7 @@
                     <div class="row">
                         <div class="col-md-3 text-center">
                             <div class="rounded-circle overflow-hidden mx-auto mb-3" style="width: 150px; height: 150px;">
-                                <img src="{{ $user->profile_picture ?? asset('assets/default-avatar.jpg') }}" 
+                                <img src="{{ $user->profile_picture ?? asset('assets/default-avatar.jpg') }}"
                                      class="img-fluid" alt="{{ $user->name }}">
                             </div>
                         </div>
@@ -42,18 +47,18 @@
                                 @endif
                             </div>
                             <h6 class="text-muted mb-3">{{ '@' . $user->username }}</h6>
-                            
+
                             @if($user->bio)
                                 <p>{{ $user->bio }}</p>
                             @endif
-                            
+
                             @if($user->url)
                                 <p class="mb-3">
                                     <i class="bi bi-link-45deg"></i>
                                     <a href="{{ $user->url }}" target="_blank" rel="noopener noreferrer">{{ $user->url }}</a>
                                 </p>
                             @endif
-                            
+
                             <div class="d-flex mt-3">
                                 <div class="me-4">
                                     <span class="fw-bold">{{ $postsCount }}</span>
@@ -64,10 +69,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- User Posts -->
             <h4 class="mb-3">Posts</h4>
-            
+
             <div class="row">
                 @forelse($posts as $post)
                     <div class="col-md-6 col-lg-4 mb-4">
@@ -75,7 +80,7 @@
                             <div class="card-body">
                                 <h6 class="card-title">{{ Str::limit($post->title, 50) }}</h6>
                                 <p class="card-text small text-muted">{{ Str::limit($post->description, 100) }}</p>
-                                
+
                                 @if($post->file_url)
                                     <div class="mb-3">
                                         @if($post->file_type == 'image')
@@ -93,7 +98,7 @@
                                         @endif
                                     </div>
                                 @endif
-                                
+
                                 <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
                                     <div class="d-flex align-items-center">
                                         <span class="me-3">
@@ -125,7 +130,7 @@
                     </div>
                 @endforelse
             </div>
-            
+
             <!-- Pagination -->
             <div class="d-flex justify-content-center mt-4">
                 {{ $posts->links() }}
@@ -141,11 +146,11 @@
         border-radius: 16px;
         transition: transform 0.2s ease;
     }
-    
+
     .card:hover {
         transform: translateY(-4px);
     }
-    
+
     .card .stretched-link::after {
         border-radius: 16px;
     }

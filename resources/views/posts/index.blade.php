@@ -27,7 +27,7 @@
                             @endauth
                         </div>
                     </div>
-                    
+
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a href="{{ route('posts.index') }}" class="nav-link active px-3 py-2 rounded-pill mb-1">
@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Main Feed -->
         <div class="col-lg-6 col-md-8">
             <!-- Create Post Card -->
@@ -76,14 +76,30 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <input type="hidden" name="title" value="Post from {{ Auth::user()->name }}">
-                                    
+
                                     <!-- Editable content area instead of textarea -->
-                                    <div class="form-control border-0 mb-2 post-input" 
-                                         contenteditable="true" 
+                                    <div class="form-control border-0 mb-2 post-input"
+                                         contenteditable="true"
                                          data-placeholder="What's happening?"
                                          id="post-content"></div>
                                     <input type="hidden" name="description" id="post-description-input">
-                                    
+
+                                    <!-- Hashtags Display -->
+                                    <div id="hashtags-container" class="mb-2" style="display: none;">
+                                        <div class="d-flex flex-wrap gap-1" id="hashtags-list">
+                                            <!-- Hashtags will be displayed here -->
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="hashtags" id="hashtags-input">
+
+                                    <!-- Categories Display -->
+                                    <div id="categories-container" class="mb-2" style="display: none;">
+                                        <div class="d-flex flex-wrap gap-1" id="categories-list">
+                                            <!-- Categories will be displayed here -->
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="categories" id="categories-input">
+
                                     <!-- Media Preview Container for Multiple Files -->
                                     <div id="multiple-files-preview-container" class="mb-2" style="display: none;">
                                         <div class="rounded border p-2 bg-light">
@@ -98,7 +114,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Media Type Badges -->
                                     <div id="media-type-badges" class="mb-2" style="display: none;">
                                         <div class="d-flex flex-wrap gap-1">
@@ -113,7 +129,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
                                             <!-- Separate icons for different media types -->
@@ -129,12 +145,31 @@
                                             <button type="button" class="btn btn-sm text-primary border-0" title="Add Emoji">
                                                 <i class="bi bi-emoji-smile"></i>
                                             </button>
-                                            
+
+                                            <!-- Category Selector -->
+                                            <div class="dropdown">
+                                                <button type="button" class="btn btn-sm text-primary border-0 dropdown-toggle" id="categoryDropdown" data-bs-toggle="dropdown" title="Add Category">
+                                                    <i class="bi bi-tags"></i>
+                                                </button>
+                                                <ul class="dropdown-menu category-dropdown" aria-labelledby="categoryDropdown">
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="Tugas Akhir" data-icon="🎓">🎓 Tugas Akhir</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="Audio" data-icon="🎵">🎵 Audio</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="Video" data-icon="🎬">🎬 Video</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="Foto" data-icon="📸">📸 Foto</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="Animasi" data-icon="🎭">🎭 Animasi</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="UI/UX" data-icon="🎨">🎨 UI/UX</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="Nirmana" data-icon="🖼️">🖼️ Nirmana</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="Gambar Berulak" data-icon="🔄">🔄 Gambar Berulak</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="VR" data-icon="🥽">🥽 VR</a></li>
+                                                    <li><a class="dropdown-item category-option" href="#" data-category="AR" data-icon="📱">📱 AR</a></li>
+                                                </ul>
+                                            </div>
+
                                             <!-- Hidden file inputs that support multiple files -->
                                             <input type="file" name="files[]" class="d-none" id="file-upload-image" accept="image/*" multiple>
                                             <input type="file" name="files[]" class="d-none" id="file-upload-video" accept="video/*" multiple>
                                             <input type="file" name="files[]" class="d-none" id="file-upload-audio" accept="audio/*" multiple>
-                                            
+
                                             <!-- Track selected files by type -->
                                             <input type="hidden" name="has_images" id="has-images" value="0">
                                             <input type="hidden" name="has_videos" id="has-videos" value="0">
@@ -156,7 +191,7 @@
                     </div>
                 </div>
             @endauth
-            
+
             <!-- Feed Items -->
             @forelse($posts as $post)
                 <div class="card border-0 shadow-sm rounded-lg mb-3 post-card" id="post-{{ $post->id }}">
@@ -191,9 +226,28 @@
                                         </ul>
                                     </div>
                                 </div>
-                                
+
                                 <p class="my-2">{{ $post->description }}</p>
-                                
+
+                                 <!-- Display Hashtags -->
+                                 @if($post->hashtags && $post->hashtags->count() > 0)
+                                 <div class="mb-2">
+                                     @foreach($post->hashtags as $hashtag)
+                                         {{-- <a href="{{ route('posts.hashtag', $hashtag->slug) }}" class="hashtag-display me-1 text-decoration-none">#{{ $hashtag->name }}</a> --}}
+                                         <span class="hashtag-display me-1 text-decoration-none">#{{ $hashtag->name }}</span>
+                                     @endforeach
+                                 </div>
+                             @endif
+
+                             <!-- Display Category -->
+                             @if($post->category)
+                                 <div class="mb-2">
+                                     <a href="{{ route('posts.category', $post->category->slug) }}" class="category-display me-1 text-decoration-none">
+                                         {{ $post->category->icon ?? '📁' }} {{ $post->category->name }}
+                                     </a>
+                                 </div>
+                             @endif
+
                                 {{-- Display media files (Twitter/X style layout) --}}
 @if($post->media->count() > 0)
     <div class="media-container">
@@ -235,7 +289,7 @@
         </audio>
     </div>
     @endif
-                    
+
                     {{-- Tambahkan overlay +N untuk gambar terakhir jika ada lebih dari 4 media --}}
                     @if($index == 3 && $post->media->count() > 4)
                         <div class="media-more-overlay">+{{ $post->media->count() - 4 }}</div>
@@ -243,7 +297,7 @@
                 </div>
             @endforeach
         </div>
-        
+
         {{-- Indikator gallery jika ada lebih dari 1 media --}}
         @if($post->media->count() > 1)
             <div class="media-gallery-indicator">
@@ -294,8 +348,8 @@
 @endif
                                 <!-- Action Buttons -->
                                 <div class="d-flex mt-2">
-                                    <button class="btn btn-sm btn-link text-muted me-3 like-button" 
-                                            data-post-id="{{ $post->id }}" 
+                                    <button class="btn btn-sm btn-link text-muted me-3 like-button"
+                                            data-post-id="{{ $post->id }}"
                                             data-liked="{{ $post->isLikedBy(Auth::user() ?? null) ? 'true' : 'false' }}">
                                         <i class="bi {{ $post->isLikedBy(Auth::user() ?? null) ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
                                         <span class="likes-count ms-1">{{ $post->likes_count }}</span>
@@ -321,13 +375,13 @@
                     <p class="text-muted">Be the first to share something!</p>
                 </div>
             @endforelse
-            
+
             <!-- Pagination -->
             <div class="d-flex justify-content-center mt-4">
                 {{ $posts->links() }}
             </div>
         </div>
-        
+
         <!-- Right Sidebar - Trending & Suggestions -->
         <div class="col-lg-3 col-md-4 d-none d-md-block">
             <!-- Trending Section -->
@@ -345,7 +399,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Who to Follow -->
             <div class="card border-0 shadow-sm rounded-lg">
                 <div class="card-header bg-white border-0">
@@ -376,19 +430,25 @@
         const postContent = document.getElementById('post-content');
         const postDescriptionInput = document.getElementById('post-description-input');
         const submitPostBtn = document.getElementById('submit-post-btn');
-        
+
+        // Hashtag and Category arrays
+        // Arrays for hashtags and categories (both support multiple)
+    let hashtags = [];
+    let selectedCategories = []; // Changed to array for multiple categories
+
+
         // Multiple file preview elements
         const filePreviewContainer = document.getElementById('multiple-files-preview-container');
         const previewWrapper = document.getElementById('files-preview-wrapper');
         const clearAllBtn = document.getElementById('clear-all-files');
-        
+
         // File type counters
         let fileCounters = {
             image: 0,
             video: 0,
             audio: 0
         };
-        
+
         // Media badge elements
         const mediaBadges = {
             container: document.getElementById('media-type-badges'),
@@ -405,55 +465,304 @@
                 count: document.getElementById('audio-count')
             }
         };
-        
-        if (postContent) {
-            postContent.addEventListener('input', function() {
-                // Update hidden input value
-                postDescriptionInput.value = this.innerText.trim();
-                
-                // Enable/disable post button based on content
-                submitPostBtn.disabled = !this.innerText.trim() && !hasUploadedFiles();
-            });
-            
-            postContent.addEventListener('focus', function() {
-                if (this.textContent.trim() === '') {
-                    this.classList.add('focused');
+
+         // ====== HASHTAG FUNCTIONALITY ======
+    function extractHashtagsFromText(text) {
+        const hashtagRegex = /#[a-zA-Z0-9_\u0080-\uFFFF]+/g;
+        const matches = text.match(hashtagRegex) || [];
+        return matches.map(tag => tag.slice(1)); // Remove # symbol
+    }
+
+    function removeHashtagsFromText(text) {
+        const hashtagRegex = /#[a-zA-Z0-9_\u0080-\uFFFF]+/g;
+        return text.replace(hashtagRegex, '').replace(/\s+/g, ' ').trim();
+    }
+
+    function processHashtagsOnSpace() {
+        const currentText = postContent.innerText;
+        console.log('Processing text for hashtags:', currentText);
+
+        const extractedHashtags = extractHashtagsFromText(currentText);
+
+        if (extractedHashtags.length > 0) {
+            // Add new hashtags (avoid duplicates)
+            extractedHashtags.forEach(tag => {
+                if (!hashtags.includes(tag)) {
+                    hashtags.push(tag);
                 }
             });
-            
-            postContent.addEventListener('blur', function() {
-                if (this.textContent.trim() === '') {
-                    this.classList.remove('focused');
-                }
-            });
+
+            // Remove hashtags from text
+            const cleanText = removeHashtagsFromText(currentText);
+            postContent.innerHTML = cleanText;
+
+            // Set cursor at end
+            const range = document.createRange();
+            const sel = window.getSelection();
+            if (postContent.childNodes.length > 0) {
+                range.setStartAfter(postContent.childNodes[postContent.childNodes.length - 1]);
+            } else {
+                range.setStart(postContent, 0);
+            }
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            updateHashtagDisplay();
+            updateSubmitButton();
+
+            console.log('Updated hashtags:', hashtags);
+            console.log('Clean text:', cleanText);
         }
-        
+    }
+
+    function updateHashtagDisplay() {
+        const hashtagsContainer = document.getElementById('hashtags-container');
+        const hashtagsList = document.getElementById('hashtags-list');
+
+        if (hashtags.length > 0) {
+            hashtagsList.innerHTML = '';
+            hashtags.forEach((hashtag, index) => {
+                const hashtagElement = document.createElement('span');
+                hashtagElement.className = 'hashtag-tag';
+                hashtagElement.innerHTML = `
+                    #${hashtag}
+                    <button type="button" class="hashtag-remove" data-index="${index}">×</button>
+                `;
+                hashtagsList.appendChild(hashtagElement);
+            });
+            hashtagsContainer.style.display = 'block';
+        } else {
+            hashtagsContainer.style.display = 'none';
+        }
+    }
+
+    // ====== CATEGORY FUNCTIONALITY (Multiple Support) ======
+    document.querySelectorAll('.category-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const categoryName = this.dataset.category;
+            const categoryIcon = this.dataset.icon;
+
+            const category = {
+                name: categoryName,
+                icon: categoryIcon
+            };
+
+            // Check if category already selected
+            const existingIndex = selectedCategories.findIndex(cat => cat.name === categoryName);
+
+            if (existingIndex === -1) {
+                // Add new category
+                selectedCategories.push(category);
+            } else {
+                // Remove existing category (toggle)
+                selectedCategories.splice(existingIndex, 1);
+            }
+
+            updateCategoryDisplay();
+            updateSubmitButton();
+
+            console.log('Updated categories:', selectedCategories);
+        });
+    });
+
+    function updateCategoryDisplay() {
+        const categoriesContainer = document.getElementById('categories-container');
+        const categoriesList = document.getElementById('categories-list');
+
+        if (selectedCategories.length > 0) {
+            categoriesList.innerHTML = '';
+            selectedCategories.forEach((category, index) => {
+                const categoryElement = document.createElement('span');
+                categoryElement.className = 'category-tag';
+                categoryElement.innerHTML = `
+                    ${category.icon} ${category.name}
+                    <button type="button" class="category-remove" data-index="${index}">×</button>
+                `;
+                categoriesList.appendChild(categoryElement);
+            });
+            categoriesContainer.style.display = 'block';
+        } else {
+            categoriesContainer.style.display = 'none';
+        }
+    }
+
+    // ====== REMOVE HANDLERS ======
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('hashtag-remove')) {
+            const index = parseInt(e.target.dataset.index);
+            hashtags.splice(index, 1);
+            updateHashtagDisplay();
+            updateSubmitButton();
+            console.log('Removed hashtag, remaining:', hashtags);
+        }
+
+        if (e.target.classList.contains('category-remove')) {
+            const index = parseInt(e.target.dataset.index);
+            selectedCategories.splice(index, 1);
+            updateCategoryDisplay();
+            updateSubmitButton();
+            console.log('Removed category, remaining:', selectedCategories);
+        }
+    });
+
+    // ====== INPUT EVENT HANDLERS ======
+    if (postContent) {
+        postContent.addEventListener('input', function() {
+            const text = this.innerText.trim();
+            const cleanText = removeHashtagsFromText(text);
+            postDescriptionInput.value = cleanText;
+            updateSubmitButton();
+        });
+
+        postContent.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.key === 'Enter') {
+                setTimeout(() => processHashtagsOnSpace(), 10);
+            }
+        });
+
+        postContent.addEventListener('paste', function(e) {
+            setTimeout(() => processHashtagsOnSpace(), 50);
+        });
+
+        postContent.addEventListener('focus', function() {
+            if (this.textContent.trim() === '') {
+                this.classList.add('focused');
+            }
+        });
+
+        postContent.addEventListener('blur', function() {
+    if (this.textContent.trim() === '') {
+        this.classList.remove('focused');
+    }
+    // Process any remaining hashtags when user leaves the input
+    setTimeout(() => {
+        processHashtagsOnSpace();
+        updateSubmitButton(); // Add this line!
+    }, 10);
+});
+
+
+
+    }
+
         // Helper functions
         function hasUploadedFiles() {
             return fileCounters.image > 0 || fileCounters.video > 0 || fileCounters.audio > 0;
         }
-        
+
+        function updateSubmitButton() {
+    // Fix 1: Get clean content (without hashtags)
+    let hasContent = false;
+    if (postContent && postContent.innerText.trim()) {
+        const cleanText = removeHashtagsFromText(postContent.innerText.trim());
+        hasContent = cleanText.length > 0;
+    }
+
+    const hasFiles = hasUploadedFiles();
+    const hasHashtags = hashtags.length > 0;
+
+    // Fix 2: Use selectedCategories instead of categories
+    const hasCategories = selectedCategories.length > 0;
+
+    // Enable button if any condition is met
+    const shouldEnable = hasContent || hasFiles || hasHashtags || hasCategories;
+    submitPostBtn.disabled = !shouldEnable;
+
+    // Debug logging
+    console.log('Submit button update:', {
+        hasContent,
+        hasFiles,
+        hasHashtags,
+        hasCategories,
+        shouldEnable,
+        disabled: submitPostBtn.disabled
+    });
+}
+
         function updateHiddenInputs() {
             document.getElementById('has-images').value = fileCounters.image > 0 ? 1 : 0;
             document.getElementById('has-videos').value = fileCounters.video > 0 ? 1 : 0;
             document.getElementById('has-audio').value = fileCounters.audio > 0 ? 1 : 0;
         }
-        
+
         function updateMediaBadges() {
             // Update badge counts
             mediaBadges.image.count.textContent = fileCounters.image;
             mediaBadges.video.count.textContent = fileCounters.video;
             mediaBadges.audio.count.textContent = fileCounters.audio;
-            
+
             // Show/hide individual badges
             mediaBadges.image.badge.style.display = fileCounters.image > 0 ? 'inline-flex' : 'none';
             mediaBadges.video.badge.style.display = fileCounters.video > 0 ? 'inline-flex' : 'none';
             mediaBadges.audio.badge.style.display = fileCounters.audio > 0 ? 'inline-flex' : 'none';
-            
+
             // Show/hide container
             mediaBadges.container.style.display = hasUploadedFiles() ? 'block' : 'none';
         }
-        
+          // Submit form handler
+         // ====== FORM SUBMISSION ======
+    if (document.getElementById('quick-post-form')) {
+        document.getElementById('quick-post-form').addEventListener('submit', function(e) {
+            console.log('Form submission started');
+
+            // Set clean description
+            if (postContent) {
+                const cleanText = removeHashtagsFromText(postContent.innerText.trim());
+                postDescriptionInput.value = cleanText;
+            }
+
+            // Create hidden inputs for hashtags and categories with proper format
+            const form = this;
+
+            // Remove existing hidden inputs if any
+            const existingHashtagInputs = form.querySelectorAll('input[name="hashtags[]"]');
+            const existingCategoryInputs = form.querySelectorAll('input[name="categories[]"]');
+            existingHashtagInputs.forEach(input => input.remove());
+            existingCategoryInputs.forEach(input => input.remove());
+
+            // Add hashtag inputs (one for each hashtag)
+            hashtags.forEach((hashtag, index) => {
+                const hashtagInput = document.createElement('input');
+                hashtagInput.type = 'hidden';
+                hashtagInput.name = 'hashtags[]';  // Array format for Laravel
+                hashtagInput.value = hashtag;
+                form.appendChild(hashtagInput);
+                console.log(`Added hashtag input [${index}]:`, hashtag);
+            });
+
+            // Add category inputs (one for each category)
+            selectedCategories.forEach((category, index) => {
+                const categoryInput = document.createElement('input');
+                categoryInput.type = 'hidden';
+                categoryInput.name = 'categories[]';  // Array format for Laravel
+                categoryInput.value = category.name;
+                form.appendChild(categoryInput);
+                console.log(`Added category input [${index}]:`, category.name);
+            });
+
+            console.log('Form data summary:', {
+                description: postDescriptionInput.value,
+                hashtags: hashtags,
+                categories: selectedCategories.map(c => c.name),
+                hasFiles: hasUploadedFiles()
+            });
+
+            // Validation
+            if (!postDescriptionInput.value &&
+                !hasUploadedFiles() &&
+                hashtags.length === 0 &&
+                selectedCategories.length === 0) {
+                e.preventDefault();
+                alert('Please add some content, media, hashtags, or categories to your post');
+                return false;
+            }
+
+            console.log('Form validation passed, submitting...');
+        });
+    }
+
         // File upload triggers
         document.querySelectorAll('.upload-trigger').forEach(button => {
             button.addEventListener('click', function() {
@@ -461,30 +770,30 @@
                 document.getElementById(`file-upload-${type}`).click();
             });
         });
-        
+
         // Handle file selection for each type
         const fileUploads = {
             image: document.getElementById('file-upload-image'),
             video: document.getElementById('file-upload-video'),
             audio: document.getElementById('file-upload-audio')
         };
-        
+
         Object.keys(fileUploads).forEach(type => {
             const fileInput = fileUploads[type];
-            
+
             if (fileInput) {
                 fileInput.addEventListener('change', function() {
                     if (this.files.length > 0) {
                         // Process each selected file
                         for (let i = 0; i < this.files.length; i++) {
                             const file = this.files[i];
-                            
+
                             // Create preview element
                             const previewItem = document.createElement('div');
                             previewItem.className = 'preview-item position-relative m-1';
                             previewItem.dataset.type = type;
                             previewItem.dataset.name = file.name;
-                            
+
                             // Create remove button
                             const removeBtn = document.createElement('button');
                             removeBtn.type = 'button';
@@ -498,18 +807,15 @@
                                 fileCounters[type]--;
                                 updateMediaBadges();
                                 updateHiddenInputs();
-                                
+
                                 // Hide container if no files
                                 if (!hasUploadedFiles()) {
                                     filePreviewContainer.style.display = 'none';
                                 }
-                                
-                                // Disable submit button if no content or files
-                                if (postContent && !postContent.innerText.trim() && !hasUploadedFiles()) {
-                                    submitPostBtn.disabled = true;
-                                }
+
+                                updateSubmitButton();
                             });
-                            
+
                             // Create preview content based on file type
                             if (type === 'image') {
                                 const img = document.createElement('img');
@@ -529,10 +835,10 @@
                                 video.muted = true;
                                 video.controls = false;
                                 // Auto-play on hover
-                                video.addEventListener('mouseover', function() { 
+                                video.addEventListener('mouseover', function() {
                                     this.play();
                                 });
-                                video.addEventListener('mouseout', function() { 
+                                video.addEventListener('mouseout', function() {
                                     this.pause();
                                     this.currentTime = 0;
                                 });
@@ -543,92 +849,75 @@
                                 audioContainer.className = 'bg-light rounded d-flex flex-column align-items-center justify-content-center';
                                 audioContainer.style.width = '100px';
                                 audioContainer.style.height = '100px';
-                                
+
                                 const icon = document.createElement('i');
                                 icon.className = 'bi bi-file-earmark-music text-success';
                                 icon.style.fontSize = '2rem';
-                                
+
                                 const name = document.createElement('div');
                                 name.className = 'small text-truncate text-center px-1';
                                 name.style.width = '100%';
                                 name.textContent = file.name;
-                                
+
                                 audioContainer.appendChild(icon);
                                 audioContainer.appendChild(name);
                                 previewItem.appendChild(audioContainer);
                             }
-                            
+
                             // Add remove button to preview item
                             previewItem.appendChild(removeBtn);
-                            
+
                             // Append preview item to container
                             previewWrapper.appendChild(previewItem);
-                            
+
                             // Update counter
                             fileCounters[type]++;
                         }
-                        
+
                         // Show preview container
                         filePreviewContainer.style.display = 'block';
-                        
+
                         // Update media badges
                         updateMediaBadges();
                         updateHiddenInputs();
-                        
-                        // Enable post button
-                        submitPostBtn.disabled = false;
+
+                        // Update submit button
+                        updateSubmitButton();
                     }
                 });
             }
         });
-        
+
         // Clear all files button
         if (clearAllBtn) {
             clearAllBtn.addEventListener('click', function() {
                 // Clear all previews
                 previewWrapper.innerHTML = '';
-                
+
                 // Reset file inputs
                 Object.values(fileUploads).forEach(input => {
                     if (input) input.value = '';
                 });
-                
+
                 // Reset counters
                 fileCounters = { image: 0, video: 0, audio: 0 };
-                
+
                 // Update UI
                 filePreviewContainer.style.display = 'none';
                 updateMediaBadges();
                 updateHiddenInputs();
-                
-                // Disable submit button if no text content
-                if (postContent && !postContent.innerText.trim()) {
-                    submitPostBtn.disabled = true;
-                }
+                // updateCategoryDisplay();
+                updateSubmitButton();
             });
         }
-        
-        // Submit form handler
-        if (document.getElementById('quick-post-form')) {
-            document.getElementById('quick-post-form').addEventListener('submit', function(e) {
-                if (postContent) {
-                    postDescriptionInput.value = postContent.innerText.trim();
-                }
-                
-                if (!postDescriptionInput.value && !hasUploadedFiles()) {
-                    e.preventDefault();
-                    alert('Please add some content or media to your post');
-                }
-            });
-        }
-        
+
         // Like button functionality with animation
         document.querySelectorAll('.like-button').forEach(button => {
             button.addEventListener('click', function() {
                 const postId = this.dataset.postId;
                 const icon = this.querySelector('i');
                 const count = this.querySelector('.likes-count');
-                
+
                 // Animate heart immediately
                 if (this.dataset.liked === 'true') {
                     // Unlike
@@ -649,7 +938,7 @@
                     this.dataset.liked = 'true';
                     count.textContent = parseInt(count.textContent) + 1;
                 }
-                
+
                 // Send to server
                 @if(Auth::check())
                     fetch(`/posts/${postId}/like`, {
@@ -666,7 +955,7 @@
                         if (data.liked !== (this.dataset.liked === 'true')) {
                             // Revert animation if server response differs from client action
                             this.dataset.liked = data.liked ? 'true' : 'false';
-                            
+
                             if (data.liked) {
                                 icon.classList.remove('bi-heart');
                                 icon.classList.add('bi-heart-fill', 'text-danger');
@@ -674,7 +963,7 @@
                                 icon.classList.remove('bi-heart-fill', 'text-danger');
                                 icon.classList.add('bi-heart');
                             }
-                            
+
                             count.textContent = data.likes_count;
                         }
                     })
@@ -687,14 +976,14 @@
                 @endif
             });
         });
-        
+
         // Share button functionality
         document.querySelectorAll('.share-button').forEach(button => {
             button.addEventListener('click', function() {
                 const postElement = this.closest('.post-card');
                 const postId = postElement.id.replace('post-', '');
                 const postUrl = `${window.location.origin}/posts/${postId}`;
-                
+
                 if (navigator.share) {
                     navigator.share({
                         title: 'Check out this post',
@@ -713,10 +1002,10 @@
                         tooltip.style.transform = 'translateX(-50%)';
                         tooltip.style.zIndex = '1000';
                         tooltip.textContent = 'Link copied!';
-                        
+
                         this.style.position = 'relative';
                         this.appendChild(tooltip);
-                        
+
                         setTimeout(() => {
                             tooltip.remove();
                         }, 2000);
@@ -730,7 +1019,7 @@ document.querySelectorAll('[data-play-on-hover]').forEach(video => {
     video.addEventListener('mouseover', function() {
         this.play();
     });
-    
+
     video.addEventListener('mouseout', function() {
         this.pause();
         this.currentTime = 0;
@@ -741,7 +1030,7 @@ document.querySelectorAll('[data-play-on-hover]').forEach(video => {
 document.querySelectorAll('.audio-player-wrapper').forEach(wrapper => {
     const audio = wrapper.querySelector('audio');
     const playButton = wrapper.querySelector('.play-button');
-    
+
     if (playButton && audio) {
         playButton.addEventListener('click', function() {
             if (audio.paused) {
@@ -755,7 +1044,7 @@ document.querySelectorAll('.audio-player-wrapper').forEach(wrapper => {
                         }
                     }
                 });
-                
+
                 audio.play();
                 this.classList.add('playing');
             } else {
@@ -763,7 +1052,7 @@ document.querySelectorAll('.audio-player-wrapper').forEach(wrapper => {
                 this.classList.remove('playing');
             }
         });
-        
+
         // Update button state when audio ends
         audio.addEventListener('ended', function() {
             playButton.classList.remove('playing');
@@ -779,12 +1068,12 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
     const waveformProgress = player.querySelector('.waveform-progress');
     const waveformContainer = player.querySelector('.waveform-container');
     const timeDisplay = player.querySelector('.waveform-time');
-    
+
     if (audio && playBtn) {
         // Play/Pause functionality
         playBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            
+
             if (audio.paused) {
                 // Pause all other audio first
                 document.querySelectorAll('audio').forEach(otherAudio => {
@@ -797,7 +1086,7 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
                         }
                     }
                 });
-                
+
                 // Play this audio
                 audio.play();
                 playBtn.classList.add('playing');
@@ -809,36 +1098,36 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
                 waveformContainer.classList.remove('waveform-animated');
             }
         });
-        
+
         // Click on waveform to seek
         waveformContainer.addEventListener('click', function(e) {
             e.stopPropagation();
-            
+
             if (!audio.paused || audio.readyState >= 2) {
                 const rect = waveformContainer.getBoundingClientRect();
                 const clickPosition = (e.clientX - rect.left) / rect.width;
                 audio.currentTime = audio.duration * clickPosition;
-                
+
                 // If click but not playing, start playing
                 if (audio.paused) {
                     playBtn.click();
                 }
             }
         });
-        
+
         // Update progress bar and time
         audio.addEventListener('timeupdate', function() {
             if (audio.duration) {
                 const progress = (audio.currentTime / audio.duration) * 100;
                 waveformProgress.style.width = `${progress}%`;
-                
+
                 // Update time display
                 const minutes = Math.floor(audio.currentTime / 60);
                 const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
                 timeDisplay.textContent = `${minutes}:${seconds}`;
             }
         });
-        
+
         // Reset when ended
         audio.addEventListener('ended', function() {
             playBtn.classList.remove('playing');
@@ -846,7 +1135,7 @@ document.querySelectorAll('.soundcloud-player').forEach(player => {
             waveformProgress.style.width = '0%';
             timeDisplay.textContent = '0:00';
         });
-        
+
         // Load metadata to setup
         audio.addEventListener('loadedmetadata', function() {
             const minutes = Math.floor(audio.duration / 60);
@@ -868,13 +1157,13 @@ document.querySelectorAll('.image-item, .video-item').forEach(item => {
 document.querySelectorAll('.media-container').forEach(container => {
     container.addEventListener('click', function(e) {
         // Prevent default action when clicking play button or audio control
-        if (e.target.closest('.play-button') || 
+        if (e.target.closest('.play-button') ||
             e.target.closest('.audio-thumbnail') ||
             e.target.closest('.waveform-container') ||
             e.target.closest('.media-play-button')) {
             return;
         }
-        
+
         // Navigate to post detail
         const postId = this.closest('.post-card').id.replace('post-', '');
         window.location.href = `/posts/${postId}`;
@@ -885,25 +1174,25 @@ document.querySelectorAll('.media-container').forEach(container => {
 document.querySelectorAll('.media-item video').forEach(video => {
     let clickCount = 0;
     let clickTimer = null;
-    
+
     video.addEventListener('click', function(e) {
         e.stopPropagation(); // Prevent bubbling to container
-        
+
         clickCount++;
-        
+
         if (clickCount === 1) {
             clickTimer = setTimeout(() => {
                 // Single click - toggle mute/unmute instead of play/pause
                 if (this.muted) {
                     // Unmute video
                     this.muted = false;
-                    
+
                     // Show playing with sound indicator
                     const playButton = this.parentElement.querySelector('.media-play-button');
                     if (playButton) {
                         playButton.innerHTML = '<i class="bi bi-volume-up"></i>';
                         playButton.style.opacity = '1';
-                        
+
                         // Hide the indicator after 2 seconds
                         setTimeout(() => {
                             playButton.style.opacity = '0';
@@ -912,27 +1201,27 @@ document.querySelectorAll('.media-item video').forEach(video => {
                 } else {
                     // Mute video but keep playing
                     this.muted = true;
-                    
+
                     // Show muted indicator
                     const playButton = this.parentElement.querySelector('.media-play-button');
                     if (playButton) {
                         playButton.innerHTML = '<i class="bi bi-volume-mute"></i>';
                         playButton.style.opacity = '1';
-                        
+
                         // Hide the indicator after 2 seconds
                         setTimeout(() => {
                             playButton.style.opacity = '0';
                         }, 2000);
                     }
                 }
-                
+
                 clickCount = 0;
             }, 300); // 300ms delay for double click detection
         } else if (clickCount === 2) {
             // Double click - navigate to post
             clearTimeout(clickTimer);
             clickCount = 0;
-            
+
             const postId = this.closest('.post-card').id.replace('post-', '');
             window.location.href = `/posts/${postId}`;
         }
@@ -943,7 +1232,7 @@ document.querySelectorAll('.media-item video').forEach(video => {
 document.querySelectorAll('.media-play-button').forEach(button => {
     button.addEventListener('click', function(e) {
         e.stopPropagation(); // Prevent bubbling to container
-        
+
         const video = this.closest('.media-item').querySelector('video');
         if (video) {
             if (video.muted) {
@@ -953,7 +1242,7 @@ document.querySelectorAll('.media-play-button').forEach(button => {
                 video.muted = true;
                 this.innerHTML = '<i class="bi bi-volume-mute"></i>';
             }
-            
+
             // Show the button temporarily
             this.style.opacity = '1';
             setTimeout(() => {
@@ -966,6 +1255,7 @@ document.querySelectorAll('.media-play-button').forEach(button => {
 });
     });
 </script>
+
 @endsection
 
 @section('styles')
@@ -973,86 +1263,184 @@ document.querySelectorAll('.media-play-button').forEach(button => {
     body {
         background-color: #f7f9fa;
     }
-    
+
     .card {
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
     }
-    
+
     .post-card {
         transition: all 0.2s ease;
     }
-    
+
     .post-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
     }
-    
+
     .btn-link {
         text-decoration: none;
         color: #6c757d;
         padding: 0.25rem 0.5rem;
         border-radius: 20px;
     }
-    
+
     .btn-link:hover {
         background-color: rgba(0, 0, 0, 0.05);
         color: #495057;
     }
-    
+
     .nav-link {
         color: #212529;
     }
-    
+
     .nav-link:hover, .nav-link.active {
         background-color: rgba(29, 161, 242, 0.1);
         color: #1da1f2;
     }
-    
+
     .form-control:focus {
         box-shadow: none;
         border-color: #1da1f2;
     }
-    
+
     .rounded-pill {
         border-radius: 50px !important;
     }
-    
+
     /* Post input styling */
     .post-input {
         min-height: 60px;
         overflow-y: auto;
     }
-    
+
     .post-input:empty:not(.focused):before {
         content: attr(data-placeholder);
         color: #aaa;
         pointer-events: none;
     }
-    
+
     .post-input:focus {
         outline: none;
         box-shadow: none;
     }
-    
+
+    /* Hashtag styling */
+    .hashtag-tag {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        margin: 2px;
+        gap: 4px;
+    }
+
+    .hashtag-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        cursor: pointer;
+    }
+
+    .hashtag-remove:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .hashtag-display {
+        color: #1da1f2;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .hashtag-display:hover {
+        text-decoration: underline;
+    }
+
+    /* Category styling */
+    .category-tag {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        margin: 2px;
+        gap: 4px;
+    }
+
+    .category-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        cursor: pointer;
+    }
+
+    .category-remove:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .category-display {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        display: inline-block;
+        margin: 2px;
+    }
+
+    /* Category dropdown styling */
+    .category-dropdown {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .category-dropdown .dropdown-item {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .category-dropdown .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+
     /* Like button animations */
     @keyframes like-animation {
         0% { transform: scale(1); }
         50% { transform: scale(1.3); }
         100% { transform: scale(1); }
     }
-    
+
     @keyframes unlike-animation {
         0% { transform: scale(1); }
         50% { transform: scale(0.8); }
         100% { transform: scale(1); }
     }
-    
+
     .animate-like {
         animation: like-animation 0.3s ease;
     }
-    
+
     .animate-unlike {
         animation: unlike-animation 0.3s ease;
     }
@@ -1071,7 +1459,7 @@ document.querySelectorAll('.media-play-button').forEach(button => {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.preview-item img, 
+.preview-item img,
 .preview-item video {
     object-fit: cover;
     width: 100px;
@@ -1440,7 +1828,7 @@ document.querySelectorAll('.media-play-button').forEach(button => {
     justify-content: center;
     z-index: 10;
 }
-    
+
     /* Media upload button hover effects */
     .upload-trigger:hover {
         transform: scale(1.1);

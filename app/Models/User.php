@@ -25,6 +25,8 @@ class User extends Authenticatable
         'bio',
         'url',
         'profile_picture',
+        'is_admin',
+        'angkatan',
     ];
 
     /**
@@ -47,9 +49,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
+    /**
+     * Get the posts for the user.
+     */
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -71,24 +77,34 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-  /**
- * Get the user's profile picture or default avatar if none exists.
- *
- * @return string
- */
-public function getProfilePictureUrlAttribute()
-{
-    if (!empty($this->profile_picture)) {
-        // Extract the filename from the full path
-        $pathParts = explode('/', $this->profile_picture);
-        $filename = end($pathParts);
-        
-        // Return the route to our controller
-        return route('profile.picture', $filename);
+    /**
+     * Check if user is admin
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return (bool) ($this->is_admin ?? false);
     }
-    
-    return asset('assets/default-avatar.png');
-}
 
-    
+    /**
+     * Get the user's profile picture or default avatar if none exists.
+     *
+     * @return string
+     */
+    public function getProfilePictureUrlAttribute()
+    {
+        if (!empty($this->profile_picture)) {
+            // Extract the filename from the full path
+            $pathParts = explode('/', $this->profile_picture);
+            $filename = end($pathParts);
+
+            // Return the route to our controller
+            return route('profile.picture', $filename);
+        }
+
+        return asset('assets/default-avatar.png');
+    }
+
+
 }

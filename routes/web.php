@@ -8,6 +8,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+// TAMBAH INI - Route untuk AJAX filtering di welcome page
+Route::get('/filter-posts', [WelcomeController::class, 'filterPosts'])->name('filter.posts');
+
 
 Route::get('/gotoabout', function () {
     return view('about');
@@ -24,7 +27,7 @@ Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile
 Route::get('/profile-pictures/{path}', [App\Http\Controllers\ProfileController::class, 'showPictures'])
     ->where('path', '.*')
     ->name('profile.picture');
-    
+
 // Protected profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,6 +37,10 @@ Route::middleware('auth')->group(function () {
 
 // Post routes (accessible to all)
 Route::get('/posts', [\App\Http\Controllers\PostController::class, 'index'])->name('posts.index');
+
+// Hashtag and Category routes (public)
+Route::get('/hashtag/{hashtag}', [PostController::class, 'byHashtag'])->name('posts.hashtag');
+Route::get('/category/{category}', [PostController::class, 'byCategory'])->name('posts.category');
 
 // Protected post routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -51,5 +58,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('/posts/{post}', [\App\Http\Controllers\PostController::class, 'show'])->name('posts.show');
 
+// PERBAIKI - Admin Routes dengan middleware admin dan route yang lengkap
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Admin Profile/Statistik
+    Route::get('/profile', [ProfileController::class, 'adminProfile'])->name('profile');
+
+    // Admin User Management
+    Route::get('/users', [ProfileController::class, 'adminDeleteUsers'])->name('delete-users');
+    Route::delete('/users/{user}', [ProfileController::class, 'destroyUser'])->name('users.destroy');
+    Route::post('/users/bulk-delete', [ProfileController::class, 'destroyMultipleUsers'])->name('users.bulk-delete');
+
+    // TAMBAH INI - Admin Post Management
+    Route::get('/posts', [ProfileController::class, 'adminDeletePosts'])->name('delete-posts');
+    Route::delete('/posts/{post}', [ProfileController::class, 'destroyPost'])->name('posts.destroy');
+    Route::post('/posts/bulk-delete', [ProfileController::class, 'destroyMultiplePosts'])->name('posts.bulk-delete');
+
+    // Admin Feed
+    Route::get('/feed', [ProfileController::class, 'adminFeed'])->name('feed');
+});
 
 require __DIR__ . '/auth.php';
