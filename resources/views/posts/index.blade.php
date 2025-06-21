@@ -41,7 +41,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('posts.create') }}" class="nav-link px-3 py-2 rounded-pill mb-1">
+                            <a href="{{ route('posts.index') }}" class="nav-link px-3 py-2 rounded-pill mb-1">
                                 <i class="bi bi-plus-circle me-2"></i> Create Post
                             </a>
                         </li>

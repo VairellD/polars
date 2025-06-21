@@ -17,9 +17,9 @@ Route::get('/gotoabout', function () {
 });
 
 // Authentication Routes
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/posts', function () {
+    return view('posts');
+})->middleware(['auth', 'verified'])->name('index');
 
 // Public profile routes
 Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
