@@ -62,7 +62,7 @@ Route::get('/posts/{post}', [\App\Http\Controllers\PostController::class, 'show'
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
     // Admin Profile/Statistik
-    Route::get('/profile', [ProfileController::class, 'adminProfile'])->name('profile');
+    Route::get('/profile', [ProfileController::class, 'adminProfile'])->name('admin.profile');
 
     // Admin User Management
     Route::get('/users', [ProfileController::class, 'adminDeleteUsers'])->name('delete-users');

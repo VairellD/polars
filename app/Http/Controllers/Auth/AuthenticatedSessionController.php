@@ -28,6 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+        if ($user->is_admin) {
+            return redirect(route('admin.profile', absolute: false))
+                ->with('success', 'Selamat datang, Admin ' . $user->name . '!');
+        }
+
         return redirect(route('posts.index', absolute: false))
             ->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
     }

@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Logo Kiri -->
         <a href="/" class="navbar-brand">
-            <img src="{{ asset('assets/terminallogo.png') }}" alt="PoLaRs." class="navbar-logo-polars">
+            <img src="{{ asset('assets/TeRMinal_LOGO.svg') }}" alt="PoLaRs." class="navbar-logo-polars">
         </a>
 
         <!-- Toggle Button untuk Mobile -->
@@ -17,16 +17,19 @@
                     <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/">HOME</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('posts*') ? 'active' : '' }}" href="{{ route('posts.index') }}">GALLERY</a>
+                    <a class="nav-link {{ request()->is('posts*') ? 'active' : '' }}"
+                        href="{{ route('posts.index') }}">GALLERY</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('profile*') ? 'active' : '' }}" href="{{ route('profile.index') }}">PROFILE</a>
+                    <a class="nav-link {{ request()->is('profile*') ? 'active' : '' }}"
+                        href="{{ route('profile.index') }}">PROFILE</a>
                 </li>
             </ul>
 
             <!-- Search Bar -->
             <form class="d-flex" action="{{ route('posts.index') }}" method="GET">
-                <input class="form-control me-2" type="search" name="search" placeholder="Search" value="{{ request('search') }}">
+                <input class="form-control me-2" type="search" name="search" placeholder="Search"
+                    value="{{ request('search') }}">
                 <button class="btn btn-outline-secondary" type="submit">Search</button>
             </form>
         </div>
@@ -36,7 +39,7 @@
             <a href="#" class="navbar-brand">
                 <img src="{{ asset('assets/himedia logo 1.png') }}" alt="HiMedia" class="logo-himedia">
             </a>
-            
+
             <!-- Hidden Dropdown that appears on hover -->
             <div class="auth-dropdown">
                 @auth

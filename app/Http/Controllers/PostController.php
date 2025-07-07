@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Media;
 use App\Models\Category;
 use App\Models\Hashtag;
@@ -32,7 +33,13 @@ class PostController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('posts.index', compact('posts'));
+        $recommendedUsers = User::where('id', '!=', Auth::id())
+            ->where('is_admin', false)
+            ->inRandomOrder()
+            ->take(5)
+            ->get();
+
+        return view('posts.index', compact(['posts', 'recommendedUsers']));
     }
 
     /**
