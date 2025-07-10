@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
         if ($user->is_admin) {
-            return redirect(route('admin.profile', absolute: false))
+            return redirect()->route('admin.profile')
                 ->with('success', 'Selamat datang, Admin ' . $user->name . '!');
         }
 

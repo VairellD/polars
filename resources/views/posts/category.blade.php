@@ -420,42 +420,42 @@
             <!-- Right Sidebar - Trending & Suggestions -->
             <div class="col-lg-3 col-md-4 d-none d-md-block">
                 <!-- Trending Section -->
-                
+
 
                 <!-- Who to Follow -->
 
-                <div class="card border-0 shadow-sm rounded-lg">
+                {{-- <div class="card border-0 shadow-sm rounded-lg">
                     <div class="card-header bg-white border-0">
                         <h6 class="card-title mb-0">Recommended User</h6>
                     </div>
                     @auth
-                        @foreach ($recommendedUsers as $user)
+                    @foreach ($recommendedUsers as $user)
 
-                            <div class="list-group list-group-flush">
-                                <div class="list-group-item border-0 d-flex align-items-center p-3">
-                                    <div class="rounded-circle overflow-hidden me-3" style="width: 40px; height: 40px;">
-                                        <img src="{{ asset('assets/default-avatar.png') }}" class="img-fluid" alt="User">
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0 fs-6">{{$user->name}}</h6>
-                                        <small class="text-muted">{{$user->username}}</small>
-                                    </div>
-                                    <a href="profile/{{$user->id}}">
-                                        <button class="btn btn-sm btn-outline-primary rounded-pill">View</button>
-
-                                    </a>
-                                </div>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item border-0 d-flex align-items-center p-3">
+                            <div class="rounded-circle overflow-hidden me-3" style="width: 40px; height: 40px;">
+                                <img src="{{ asset('assets/default-avatar.png') }}" class="img-fluid" alt="User">
                             </div>
-                        @endforeach
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0 fs-6">{{$user->name}}</h6>
+                                <small class="text-muted">{{$user->username}}</small>
+                            </div>
+                            <a href="profile/{{$user->id}}">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill">View</button>
+
+                            </a>
+                        </div>
+                    </div>
+                    @endforeach
                     @endauth
                     @guest
-                        <div class="card-body text-center">
-                            <p class="mb-3">Sign in to see recommended users.</p>
-                            <a href="{{ route('login') }}" class="btn btn-primary rounded-pill me-2">Login</a>
-                            <a href="{{ route('register') }}" class="btn btn-outline-primary rounded-pill">Register</a>
-                        </div>
+                    <div class="card-body text-center">
+                        <p class="mb-3">Sign in to see recommended users.</p>
+                        <a href="{{ route('login') }}" class="btn btn-primary rounded-pill me-2">Login</a>
+                        <a href="{{ route('register') }}" class="btn btn-outline-primary rounded-pill">Register</a>
+                    </div>
                     @endguest
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -564,9 +564,9 @@
                         const hashtagElement = document.createElement('span');
                         hashtagElement.className = 'hashtag-tag';
                         hashtagElement.innerHTML = `
-                                            #${hashtag}
-                                            <button type="button" class="hashtag-remove" data-index="${index}">×</button>
-                                        `;
+                                                #${hashtag}
+                                                <button type="button" class="hashtag-remove" data-index="${index}">×</button>
+                                            `;
                         hashtagsList.appendChild(hashtagElement);
                     });
                     hashtagsContainer.style.display = 'block';
@@ -615,9 +615,9 @@
                         const categoryElement = document.createElement('span');
                         categoryElement.className = 'category-tag';
                         categoryElement.innerHTML = `
-                                            ${category.icon} ${category.name}
-                                            <button type="button" class="category-remove" data-index="${index}">×</button>
-                                        `;
+                                                ${category.icon} ${category.name}
+                                                <button type="button" class="category-remove" data-index="${index}">×</button>
+                                            `;
                         categoriesList.appendChild(categoryElement);
                     });
                     categoriesContainer.style.display = 'block';
@@ -764,7 +764,7 @@
                     hashtags.forEach((hashtag, index) => {
                         const hashtagInput = document.createElement('input');
                         hashtagInput.type = 'hidden';
-                        hashtagInput.name = 'hashtags[]';  // Array format for Laravel
+                        hashtagInput.name = 'hashtags[]'; // Array format for Laravel
                         hashtagInput.value = hashtag;
                         form.appendChild(hashtagInput);
                         console.log(`Added hashtag input [${index}]:`, hashtag);
@@ -774,7 +774,7 @@
                     selectedCategories.forEach((category, index) => {
                         const categoryInput = document.createElement('input');
                         categoryInput.type = 'hidden';
-                        categoryInput.name = 'categories[]';  // Array format for Laravel
+                        categoryInput.name = 'categories[]'; // Array format for Laravel
                         categoryInput.value = category.name;
                         form.appendChild(categoryInput);
                         console.log(`Added category input [${index}]:`, category.name);
@@ -938,7 +938,11 @@
                     });
 
                     // Reset counters
-                    fileCounters = { image: 0, video: 0, audio: 0 };
+                    fileCounters = {
+                        image: 0,
+                        video: 0,
+                        audio: 0
+                    };
 
                     // Update UI
                     filePreviewContainer.style.display = 'none';
@@ -1012,7 +1016,7 @@
                             window.location.href = "{{ route('login') }}";
                         }, 300);
                     @endif
-                                    });
+                });
             });
 
             // Share button functionality
