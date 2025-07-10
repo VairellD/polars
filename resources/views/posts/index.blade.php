@@ -426,18 +426,18 @@
             <div class="col-lg-3 col-md-4 d-none d-md-block">
                 <!-- Trending Section -->
                 <div class="card border-0 shadow-sm rounded-lg mb-4">
-{{--                    <div class="card-header bg-white border-0">--}}
-{{--                        <h6 class="card-title mb-0">Trending Tags</h6>--}}
-{{--                    </div>--}}
-{{--                    <div class="card-body p-3">--}}
-{{--                        <div class="d-flex flex-wrap gap-2">--}}
-{{--                            <a href="#" class="text-decoration-none">#multimedia</a>--}}
-{{--                            <a href="#" class="text-decoration-none">#design</a>--}}
-{{--                            <a href="#" class="text-decoration-none">#photography</a>--}}
-{{--                            <a href="#" class="text-decoration-none">#animation</a>--}}
-{{--                            <a href="#" class="text-decoration-none">#videography</a>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
+                    {{-- <div class="card-header bg-white border-0">--}}
+                        {{-- <h6 class="card-title mb-0">Trending Tags</h6>--}}
+                        {{-- </div>--}}
+                    {{-- <div class="card-body p-3">--}}
+                        {{-- <div class="d-flex flex-wrap gap-2">--}}
+                            {{-- <a href="#" class="text-decoration-none">#multimedia</a>--}}
+                            {{-- <a href="#" class="text-decoration-none">#design</a>--}}
+                            {{-- <a href="#" class="text-decoration-none">#photography</a>--}}
+                            {{-- <a href="#" class="text-decoration-none">#animation</a>--}}
+                            {{-- <a href="#" class="text-decoration-none">#videography</a>--}}
+                            {{-- </div>--}}
+                        {{-- </div>--}}
                 </div>
 
                 <!-- Who to Follow -->
@@ -446,23 +446,33 @@
                     <div class="card-header bg-white border-0">
                         <h6 class="card-title mb-0">Recommended User</h6>
                     </div>
-                    @foreach ($recommendedUsers as $user)
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item border-0 d-flex align-items-center p-3">
-                                <div class="rounded-circle overflow-hidden me-3" style="width: 40px; height: 40px;">
-                                    <img src="{{ asset('assets/default-avatar.png') }}" class="img-fluid" alt="User">
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0 fs-6">{{$user->name}}</h6>
-                                    <small class="text-muted">{{$user->username}}</small>
-                                </div>
-                                <a href="profile/{{$user->id}}">
-                                    <button class="btn btn-sm btn-outline-primary rounded-pill">View</button>
+                    @auth
+                        @foreach ($recommendedUsers as $user)
 
-                                </a>
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item border-0 d-flex align-items-center p-3">
+                                    <div class="rounded-circle overflow-hidden me-3" style="width: 40px; height: 40px;">
+                                        <img src="{{ asset('assets/default-avatar.png') }}" class="img-fluid" alt="User">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 fs-6">{{$user->name}}</h6>
+                                        <small class="text-muted">{{$user->username}}</small>
+                                    </div>
+                                    <a href="profile/{{$user->id}}">
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill">View</button>
+
+                                    </a>
+                                </div>
                             </div>
+                        @endforeach
+                    @endauth
+                    @guest
+                        <div class="card-body text-center">
+                            <p class="mb-3">Sign in to see recommended users.</p>
+                            <a href="{{ route('login') }}" class="btn btn-primary rounded-pill me-2">Login</a>
+                            <a href="{{ route('register') }}" class="btn btn-outline-primary rounded-pill">Register</a>
                         </div>
-                    @endforeach
+                    @endguest
                 </div>
             </div>
         </div>
@@ -572,9 +582,9 @@
                         const hashtagElement = document.createElement('span');
                         hashtagElement.className = 'hashtag-tag';
                         hashtagElement.innerHTML = `
-                                        #${hashtag}
-                                        <button type="button" class="hashtag-remove" data-index="${index}">×</button>
-                                    `;
+                                            #${hashtag}
+                                            <button type="button" class="hashtag-remove" data-index="${index}">×</button>
+                                        `;
                         hashtagsList.appendChild(hashtagElement);
                     });
                     hashtagsContainer.style.display = 'block';
@@ -623,9 +633,9 @@
                         const categoryElement = document.createElement('span');
                         categoryElement.className = 'category-tag';
                         categoryElement.innerHTML = `
-                                        ${category.icon} ${category.name}
-                                        <button type="button" class="category-remove" data-index="${index}">×</button>
-                                    `;
+                                            ${category.icon} ${category.name}
+                                            <button type="button" class="category-remove" data-index="${index}">×</button>
+                                        `;
                         categoriesList.appendChild(categoryElement);
                     });
                     categoriesContainer.style.display = 'block';
@@ -1020,7 +1030,7 @@
                             window.location.href = "{{ route('login') }}";
                         }, 300);
                     @endif
-                                });
+                                    });
             });
 
             // Share button functionality

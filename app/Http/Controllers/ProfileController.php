@@ -386,6 +386,4 @@ class ProfileController extends Controller
 
         return view('admin.feed', compact('posts'));
     }
-
-
 }
