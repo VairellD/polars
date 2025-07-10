@@ -43,6 +43,44 @@ class PostController extends Controller
     }
 
     /**
+     * Search Request
+     * This method is not used in the current implementation but can be added later
+     * for advanced search functionality.
+     */
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        // Cari post yang punya hashtag mengandung kata search
+        $posts = Post::with(['user', 'hashtags', 'likes', 'comments', 'media', 'category'])
+            ->withCount(['likes', 'comments'])
+            ->when($search, function ($query, $search) {
+                $query->whereHas('hashtags', function ($hashtagQuery) use ($search) {
+                    $hashtagQuery->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(10);
+
+        // Cari user yang cocok dengan search
+        $users = User::query()
+            ->where('is_admin', false)
+            ->where('id', '!=', Auth::id())
+            ->when($search, function ($query, $search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('username', 'like', '%' . $search . '%');
+                });
+            })
+            ->inRandomOrder()
+            ->take(5)
+            ->get();
+
+        return view('posts.search', compact('posts', 'users'));
+    }
+
+
+    /**
      * Show the form for creating a new post.
      */
     public function create()
@@ -69,7 +107,7 @@ class PostController extends Controller
             'categories' => 'nullable|array',
             'categories.*' => 'nullable|string|max:50',  // FIXED: Make nullable
             'files' => 'nullable|array',
-            'files.*' => 'nullable|file|max:102400',
+            'files.*' => 'nullable|file|max:250000',
             'has_images' => 'nullable|boolean',
             'has_videos' => 'nullable|boolean',
             'has_audio' => 'nullable|boolean',

@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function () {
 
 // Post routes (accessible to all)
 Route::get('/posts', [\App\Http\Controllers\PostController::class, 'index'])->name('posts.index');
+Route::get('/posts/search', [PostController::class, 'search'])->name('posts.search');
+
 
 // Hashtag and Category routes (public)
 Route::get('/hashtag/{hashtag}', [PostController::class, 'byHashtag'])->name('posts.hashtag');
@@ -62,7 +64,7 @@ Route::get('/posts/{post}', [\App\Http\Controllers\PostController::class, 'show'
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
     // Admin Profile/Statistik
-    Route::get('/profile', [ProfileController::class, 'adminProfile'])->name('admin.profile');
+    Route::get('/profile', [ProfileController::class, 'adminProfile'])->name('profile');
 
     // Admin User Management
     Route::get('/users', [ProfileController::class, 'adminDeleteUsers'])->name('delete-users');

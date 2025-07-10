@@ -14,15 +14,17 @@
                     <a href="{{ route('posts.index') }}" class="list-group-item list-group-item-action">
                         <i class="bi bi-plus-circle me-2"></i> Create Post
                     </a>
-                    <a href="{{ route('profile.show', Auth::user()) }}"
-                        class="list-group-item list-group-item-action {{ Auth::id() === $user->id ? 'active' : '' }}">
-                        <i class="bi bi-person me-2"></i> Profile
-                    </a>
                     @if(Auth::check() && Auth::user()->is_admin)
                         <a href="{{ route('admin.profile') }}" class="list-group-item list-group-item-action">
                             <i class="bi bi-person-gear me-2"></i> Admin Profile
                         </a>
+                    @else
+                        <a href="{{ route('profile.show', Auth::user()) }}"
+                        class="list-group-item list-group-item-action {{ Auth::id() === $user->id ? 'active' : '' }}">
+                            <i class="bi bi-person me-2"></i> Profile
+                        </a>
                     @endif
+                    
                 </div>
             </div>
 
