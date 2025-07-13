@@ -36,12 +36,21 @@
                                 </a>
                             </li>
                             @auth
-                                <li class="nav-item">
-                                    <a href="{{ route('profile.show', Auth::user()) }}"
-                                        class="nav-link px-3 py-2 rounded-pill mb-1">
-                                        <i class="bi bi-person me-2"></i> Profile
-                                    </a>
-                                </li>
+                                @if(Auth::user()->isAdmin())
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.profile', Auth::user()) }}"
+                                            class="nav-link px-3 py-2 rounded-pill mb-1">
+                                            <i class="bi bi-person me-2"></i> Profile
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="nav-item">
+                                        <a href="{{ route('profile.show', Auth::user()) }}"
+                                            class="nav-link px-3 py-2 rounded-pill mb-1">
+                                            <i class="bi bi-person me-2"></i> Profile
+                                        </a>
+                                    </li>
+                                @endif
                             @else
                                 <li class="nav-item">
                                     <a href="{{ route('login') }}" class="nav-link px-3 py-2 rounded-pill mb-1">
@@ -171,7 +180,7 @@
                                                         <li><a class="dropdown-item category-option" href="#"
                                                                 data-category="Nirmana" data-icon="🖼️">🖼️ Nirmana</a></li>
                                                         <li><a class="dropdown-item category-option" href="#"
-                                                                data-category="Gambar Berulak" data-icon="🔄">🔄 Gambar
+                                                                data-category="Gambar Bentuk" data-icon="🔄">🔄 Gambar
                                                                 Berulak</a></li>
                                                         <li><a class="dropdown-item category-option" href="#" data-category="VR"
                                                                 data-icon="🥽">🥽 VR</a></li>
@@ -420,7 +429,7 @@
             <!-- Right Sidebar - Trending & Suggestions -->
             <div class="col-lg-3 col-md-4 d-none d-md-block">
                 <!-- Trending Section -->
-                
+
 
                 <!-- Who to Follow -->
 
@@ -564,9 +573,9 @@
                         const hashtagElement = document.createElement('span');
                         hashtagElement.className = 'hashtag-tag';
                         hashtagElement.innerHTML = `
-                                            #${hashtag}
-                                            <button type="button" class="hashtag-remove" data-index="${index}">×</button>
-                                        `;
+                                                    #${hashtag}
+                                                    <button type="button" class="hashtag-remove" data-index="${index}">×</button>
+                                                `;
                         hashtagsList.appendChild(hashtagElement);
                     });
                     hashtagsContainer.style.display = 'block';
@@ -615,9 +624,9 @@
                         const categoryElement = document.createElement('span');
                         categoryElement.className = 'category-tag';
                         categoryElement.innerHTML = `
-                                            ${category.icon} ${category.name}
-                                            <button type="button" class="category-remove" data-index="${index}">×</button>
-                                        `;
+                                                    ${category.icon} ${category.name}
+                                                    <button type="button" class="category-remove" data-index="${index}">×</button>
+                                                `;
                         categoriesList.appendChild(categoryElement);
                     });
                     categoriesContainer.style.display = 'block';
@@ -1012,7 +1021,7 @@
                             window.location.href = "{{ route('login') }}";
                         }, 300);
                     @endif
-                                    });
+                                            });
             });
 
             // Share button functionality

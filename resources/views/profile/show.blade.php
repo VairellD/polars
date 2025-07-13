@@ -20,11 +20,11 @@
                         </a>
                     @else
                         <a href="{{ route('profile.show', Auth::user()) }}"
-                        class="list-group-item list-group-item-action {{ Auth::id() === $user->id ? 'active' : '' }}">
+                            class="list-group-item list-group-item-action {{ Auth::id() === $user->id ? 'active' : '' }}">
                             <i class="bi bi-person me-2"></i> Profile
                         </a>
                     @endif
-                    
+
                 </div>
             </div>
 
@@ -258,7 +258,7 @@
                                             <li><a class="dropdown-item category-option" href="#" data-category="Nirmana"
                                                     data-icon="🖼️">🖼️ Nirmana</a></li>
                                             <li><a class="dropdown-item category-option" href="#"
-                                                    data-category="Gambar Berulak" data-icon="🔄">🔄 Gambar Berulak</a>
+                                                    data-category="Gambar Bentuk" data-icon="🔄">🔄 Gambar Bentuk</a>
                                             </li>
                                             <li><a class="dropdown-item category-option" href="#" data-category="VR"
                                                     data-icon="🥽">🥽 VR</a></li>
