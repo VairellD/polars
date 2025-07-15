@@ -37,16 +37,24 @@
 
                         @if(isset($availableCategories))
                             @foreach($availableCategories as $category)
-                                <a href="{{ route('posts.category', $category->slug) }}">
+                                {{-- <a href="{{ route('posts.category', $category->slug) }}">
                                     <button class="category-tag {{ $categoryFilter === $category->slug ? 'active' : '' }}"
                                         data-category="{{ $category->slug }}">
                                         <span class="tag-icon">{{ $category->icon ?? '📁' }}</span>
                                         <span class="tag-text">{{ $category->name }}</span>
                                         @if(isset($category->posts_count))
-                                            <span class="tag-count">{{ $category->posts_count }}</span>
+                                        <span class="tag-count">{{ $category->posts_count }}</span>
                                         @endif
                                     </button>
-                                </a>
+                                </a> --}}
+                                <button class="category-tag {{ $categoryFilter === $category->slug ? 'active' : '' }}"
+                                    data-category="{{ $category->slug }}">
+                                    <span class="tag-icon">{{ $category->icon ?? '📁' }}</span>
+                                    <span class="tag-text">{{ $category->name }}</span>
+                                    @if(isset($category->posts_count))
+                                        <span class="tag-count">{{ $category->posts_count }}</span>
+                                    @endif
+                                </button>
                             @endforeach
                         @endif
                     </div>
@@ -964,12 +972,12 @@
             function renderPosts(posts) {
                 if (posts.length === 0) {
                     galleryGrid.innerHTML = `
-                                                                                        <div class="empty-state">
-                                                                                            <i class="fas fa-search fa-4x mb-3"></i>
-                                                                                            <h4>No posts found</h4>
-                                                                                            <p>Try adjusting your filters or explore different categories!</p>
-                                                                                        </div>
-                                                                                    `;
+                                                                                                    <div class="empty-state">
+                                                                                                        <i class="fas fa-search fa-4x mb-3"></i>
+                                                                                                        <h4>No posts found</h4>
+                                                                                                        <p>Try adjusting your filters or explore different categories!</p>
+                                                                                                    </div>
+                                                                                                `;
                     return;
                 }
 
@@ -983,70 +991,71 @@
                     let mediaPreview = '';
                     if (post.media_type === 'video') {
                         mediaPreview = `
-                                                                                            <div class="media-preview video-preview">
-                                                                                                <video muted preload="metadata">
-                                                                                                    <source src="${post.preview_url}" type="video/mp4">
-                                                                                                </video>
-                                                                                                <div class="play-overlay">
-                                                                                                    <i class="fas fa-play-circle"></i>
-                                                                                                </div>
-                                                                                                <div class="media-type-badge">
-                                                                                                    <i class="${mediaTypeIcons[post.media_type]}"></i>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        `;
+                                                                                                        <div class="media-preview video-preview">
+                                                                                                            <video muted preload="metadata">
+                                                                                                                <source src="${post.preview_url}" type="video/mp4">
+                                                                                                            </video>
+                                                                                                            <div class="play-overlay">
+                                                                                                                <i class="fas fa-play-circle"></i>
+                                                                                                            </div>
+                                                                                                            <div class="media-type-badge">
+                                                                                                                <i class="${mediaTypeIcons[post.media_type]}"></i>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    `;
                     } else if (post.media_type === 'audio') {
                         mediaPreview = `
-                                                                                            <div class="media-preview audio-preview">
-                                                                                                <i class="fas fa-music fa-3x"></i>
-                                                                                                <div class="audio-waves">
-                                                                                                    <span></span><span></span><span></span><span></span><span></span>
-                                                                                                </div>
-                                                                                                <div class="media-type-badge">
-                                                                                                    <i class="${mediaTypeIcons[post.media_type]}"></i>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        `;
+                                                                                                        <div class="media-preview audio-preview">
+                                                                                                            <i class="fas fa-music fa-3x"></i>
+                                                                                                            <div class="audio-waves">
+                                                                                                                <span></span><span></span><span></span><span></span><span></span>
+                                                                                                            </div>
+                                                                                                            <div class="media-type-badge">
+                                                                                                                <i class="${mediaTypeIcons[post.media_type]}"></i>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    `;
                     } else {
                         mediaPreview = `
-                                                                                            <div class="media-preview image-preview">
-                                                                                                <img src="${post.preview_url}" alt="${post.title}" loading="lazy" onerror="this.src='/assets/placeholder.jpg'">
-                                                                                                ${post.media_type === 'image' ? `<div class="media-type-badge"><i class="${mediaTypeIcons[post.media_type]}"></i></div>` : ''}
-                                                                                            </div>
-                                                                                        `;
+                                                                                                        <div class="media-preview image-preview">
+                                                                                                            <img src="${post.preview_url}" alt="${post.title}" loading="lazy" onerror="this.src='/assets/placeholder.jpg'">
+                                                                                                            ${post.media_type === 'image' ? `<div class="media-type-badge"><i class="${mediaTypeIcons[post.media_type]}"></i></div>` : ''}
+                                                                                                        </div>
+                                                                                                    `;
                     }
 
                     return `
-                                                                                        <div class="gallery-item">
-                                                                                            <a href="${post.url}">
-                                                                                                <div class="gallery-card">
-                                                                                                    ${mediaPreview}
-                                                                                                    <div class="card-info">
-                                                                                                        <div class="card-header">
-                                                                                                            ${post.category ? `
-                                                                                                                <div class="category-badge">
-                                                                                                                    <span class="category-icon">${post.category.icon}</span>
-                                                                                                                    <span class="category-name">${post.category.name}</span>
+                                                                                                    <div class="gallery-item">
+                                                                                                        <a href="${post.url}">
+                                                                                                            <div class="gallery-card">
+                                                                                                                ${mediaPreview}
+                                                                                                                <div class="card-info">
+                                                                                                                    <div class="card-header">
+                                                                                                                        ${post.category ? `
+                                                                                                                            <div class="category-badge">
+                                                                                                                                <span class="category-icon">${post.category.icon}</span>
+                                                                                                                                <span class="category-name">${post.category.name}</span>
+                                                                                                                            </div>
+                                                                                                                        ` : ''}
+                                                                                                                    </div>
+                                                                                                                    <h5>${post.title.length > 40 ? post.title.substring(0, 40) + '...' : post.title}</h5>
+                                                                                                                    <div class="card-meta">
+                                                                                                                        <span class="author">${post.user.name}</span>
+                                                                                                                        <div class="stats">
+                                                                                                                            <span><i class="fas fa-heart"></i> ${post.stats.likes_count}</span>
+                                                                                                                            <span><i class="fas fa-comment"></i> ${post.stats.comments_count}</span>
+                                                                                                                        </div>
+                                                                                                                    </div>
                                                                                                                 </div>
-                                                                                                            ` : ''}
-                                                                                                        </div>
-                                                                                                        <h5>${post.title.length > 40 ? post.title.substring(0, 40) + '...' : post.title}</h5>
-                                                                                                        <div class="card-meta">
-                                                                                                            <span class="author">${post.user.name}</span>
-                                                                                                            <div class="stats">
-                                                                                                                <span><i class="fas fa-heart"></i> ${post.stats.likes_count}</span>
-                                                                                                                <span><i class="fas fa-comment"></i> ${post.stats.comments_count}</span>
                                                                                                             </div>
-                                                                                                        </div>
+                                                                                                        </a>
                                                                                                     </div>
-                                                                                                </div>
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    `;
+                                                                                                `;
                 }).join('');
             }
 
             // Initialize active filters display
             updateActiveFilters();
+        });
     </script>
 @endsection
