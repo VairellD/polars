@@ -18,11 +18,11 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('posts*') ? 'active' : '' }}"
-                        href="{{ route('posts.index') }}">GALLERY</a>
+                        href="{{ route('posts.index') }}">FEED</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('profile*') ? 'active' : '' }}"
-                        href="{{ route('profile.index') }}">PROFILE</a>
+                        href="{{ route('profile.index') }}">MY PROFILE</a>
                 </li>
             </ul>
 
@@ -43,26 +43,26 @@
             <!-- Hidden Dropdown that appears on hover -->
             <div class="auth-dropdown">
                 @auth
-                    <a href="{{ route('profile.index') }}" class="auth-dropdown-item">
-                        <i class="bi bi-person-circle"></i> My Profile
-                    </a>
-                    <a href="{{ route('posts.create') }}" class="auth-dropdown-item">
-                        <i class="bi bi-upload"></i> Upload
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="auth-dropdown-item text-danger">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </form>
+                <a href="{{ route('profile.index') }}" class="auth-dropdown-item">
+                    <i class="bi bi-person-circle"></i> My Profile
+                </a>
+                <a href="{{ route('posts.create') }}" class="auth-dropdown-item">
+                    <i class="bi bi-upload"></i> Upload
+                </a>
+                <div class="dropdown-divider"></div>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="auth-dropdown-item text-danger">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
                 @else
-                    <a href="{{ route('login') }}" class="auth-dropdown-item">
-                        <i class="bi bi-box-arrow-in-right"></i> Login
-                    </a>
-                    <a href="{{ route('register') }}" class="auth-dropdown-item">
-                        <i class="bi bi-person-plus"></i> Register
-                    </a>
+                <a href="{{ route('login') }}" class="auth-dropdown-item">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </a>
+                <a href="{{ route('register') }}" class="auth-dropdown-item">
+                    <i class="bi bi-person-plus"></i> Register
+                </a>
                 @endauth
             </div>
         </div>

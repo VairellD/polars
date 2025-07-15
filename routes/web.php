@@ -81,3 +81,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 require __DIR__ . '/auth.php';
+
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/test-email', function () {
+    Mail::raw('Ini adalah email percobaan dari Laravel menggunakan Mailtrap.', function ($message) {
+        $message->to('penerima@contoh.com')
+            ->subject('Email Percobaan Mailtrap');
+    });
+    return "Email percobaan telah dikirim (dan ditangkap oleh Mailtrap)!";
+});
