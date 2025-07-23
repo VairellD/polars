@@ -573,9 +573,9 @@
                         const hashtagElement = document.createElement('span');
                         hashtagElement.className = 'hashtag-tag';
                         hashtagElement.innerHTML = `
-                                                    #${hashtag}
-                                                    <button type="button" class="hashtag-remove" data-index="${index}">×</button>
-                                                `;
+                                                        #${hashtag}
+                                                        <button type="button" class="hashtag-remove" data-index="${index}">×</button>
+                                                    `;
                         hashtagsList.appendChild(hashtagElement);
                     });
                     hashtagsContainer.style.display = 'block';
@@ -624,9 +624,9 @@
                         const categoryElement = document.createElement('span');
                         categoryElement.className = 'category-tag';
                         categoryElement.innerHTML = `
-                                                    ${category.icon} ${category.name}
-                                                    <button type="button" class="category-remove" data-index="${index}">×</button>
-                                                `;
+                                                        ${category.icon} ${category.name}
+                                                        <button type="button" class="category-remove" data-index="${index}">×</button>
+                                                    `;
                         categoriesList.appendChild(categoryElement);
                     });
                     categoriesContainer.style.display = 'block';
@@ -1021,7 +1021,7 @@
                             window.location.href = "{{ route('login') }}";
                         }, 300);
                     @endif
-                                            });
+                                                });
             });
 
             // Share button functionality
